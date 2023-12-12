@@ -5,17 +5,20 @@ import {render} from '../render.js';
 import FilterView from '../view/filter-view.js';
 
 export default class Presenter {
-  constructor({boardContainer}) {
+  constructor({boardContainer, pointsModel}) {
     this.boardContainer = boardContainer;
+    this.pointsModel = pointsModel;
   }
 
   init() {
+    this.boardPoints = [...this.pointsModel.getPoints()];
+
     render(new FilterView(), document.querySelector('.trip-controls__filters'));
     render(new SortView(), this.boardContainer);
     render(new EditFormView(), this.boardContainer);
 
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.boardContainer);
+    for (let i = 0; i < this.boardPoints.length; i++) {
+      render(new PointView({point: this.boardPoints[i]}), this.boardContainer);
     }
   }
 }
