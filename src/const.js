@@ -4,6 +4,7 @@ const OFFERS_TITLE = ['Add luggage', 'Upgrade to a business class', 'Add meal', 
 const POINT_COUNT = 3;
 const DATE_FORMAT = 'D MMMM';
 const TIME_FORMAT = 'hh:mm';
+const FULL_DATE_FORMAT = 'YY/MM/DD';
 
 export {
   TYPES,
@@ -12,4 +13,5 @@ export {
   DATE_FORMAT,
   TIME_FORMAT,
   OFFERS_TITLE,
+  FULL_DATE_FORMAT,
 };

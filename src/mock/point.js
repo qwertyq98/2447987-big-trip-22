@@ -49,6 +49,26 @@ const MockOffers = [
         'id': 'b4c3e4e6-9053-42ce-b747-e281314baa31',
         'title': getRandomArrayElement(OFFERS_TITLE),
         'price': 120
+      },
+      {
+        'id': 'b4c3e4e6-9053-42ce-b747-e281314baa32',
+        'title': getRandomArrayElement(OFFERS_TITLE),
+        'price': 40
+      },
+      {
+        'id': 'b4c3e4e6-9053-42ce-b747-e281314baa33',
+        'title': getRandomArrayElement(OFFERS_TITLE),
+        'price': 15
+      }
+    ]
+  },
+  {
+    'type': getRandomArrayElement(TYPES),
+    'offers': [
+      {
+        'id': 'b4c3e4e6-9053-42ce-b747-e281314baa31',
+        'title': getRandomArrayElement(OFFERS_TITLE),
+        'price': 120
       }
     ]
   },
@@ -65,26 +85,6 @@ const MockOffers = [
         'title': getRandomArrayElement(OFFERS_TITLE),
         'price': 15
       },
-    ]
-  },
-  {
-    'type': getRandomArrayElement(TYPES),
-    'offers': [
-      {
-        'id': 'b4c3e4e6-9053-42ce-b747-e281314baa31',
-        'title': getRandomArrayElement(OFFERS_TITLE),
-        'price': 120
-      },
-      {
-        'id': 'b4c3e4e6-9053-42ce-b747-e281314baa32',
-        'title': getRandomArrayElement(OFFERS_TITLE),
-        'price': 40
-      },
-      {
-        'id': 'b4c3e4e6-9053-42ce-b747-e281314baa33',
-        'title': getRandomArrayElement(OFFERS_TITLE),
-        'price': 15
-      }
     ]
   }
 ];

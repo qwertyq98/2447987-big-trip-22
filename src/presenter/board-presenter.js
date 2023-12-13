@@ -15,7 +15,7 @@ export default class Presenter {
 
     render(new FilterView(), document.querySelector('.trip-controls__filters'));
     render(new SortView(), this.boardContainer);
-    render(new EditFormView(), this.boardContainer);
+    render(new EditFormView({point: this.boardPoints[0]}), this.boardContainer);
 
     for (let i = 0; i < this.boardPoints.length; i++) {
       render(new PointView({point: this.boardPoints[i]}), this.boardContainer);
