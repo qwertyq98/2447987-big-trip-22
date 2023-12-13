@@ -7,7 +7,7 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 function createPointTemplate(point) {
-  let {
+  const {
     base_price: price,
     date_from: dateFrom,
     date_to: dateTo,
@@ -16,11 +16,11 @@ function createPointTemplate(point) {
     is_favorite: isFavorite,
   } = point;
 
-  let dateFromFormat = transformData(dateFrom, DATE_FORMAT);
-  let timeFromFormat = transformData(dateFrom, TIME_FORMAT);
-  let timeToFormat = transformData(dateTo, TIME_FORMAT);
-  let durationOfStay = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
-  let durationOfStayFormat = `${durationOfStay.days() > 1 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
+  const dateFromFormat = transformData(dateFrom, DATE_FORMAT);
+  const timeFromFormat = transformData(dateFrom, TIME_FORMAT);
+  const timeToFormat = transformData(dateTo, TIME_FORMAT);
+  const durationOfStay = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
+  const durationOfStayFormat = `${durationOfStay.days() > 1 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
 
   return (
     `<div class="event">

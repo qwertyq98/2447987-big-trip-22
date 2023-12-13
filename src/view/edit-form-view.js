@@ -4,7 +4,7 @@ import { getRandomArrayElement } from '../utils.js';
 import { transformData } from '../utils.js';
 
 function createEditFormTemplate(point) {
-  let {
+  const {
     base_price: price,
     date_from: dateFrom,
     date_to: dateTo,
