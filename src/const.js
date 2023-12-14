@@ -1,4 +1,4 @@
-const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const CITIES = ['Dubai', 'Ottawa', 'Berlin', 'London', 'Luxembourg', 'Seoul', 'Limassol', 'Rome'];
 const OFFERS_TITLE = ['Add luggage', 'Upgrade to a business class', 'Add meal', 'Choose seats', 'Travel by train', 'Order Uber'];
 const POINT_COUNT = 3;

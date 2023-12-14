@@ -1,7 +1,7 @@
 import { FULL_DATE_FORMAT, TIME_FORMAT, TYPES } from '../const.js';
 import { createElement } from '../render.js';
 import { getRandomArrayElement } from '../utils.js';
-import { transformData } from '../utils.js';
+import { transformData, ucFirst } from '../utils.js';
 
 function createEditFormTemplate(point) {
   const {
@@ -39,7 +39,7 @@ function createEditFormTemplate(point) {
                     class="event__type-label
                     event__type-label--${getRandomArrayElement(type)}"
                     for="event-type-${getRandomArrayElement(type)}-1"
-                  >${getRandomArrayElement(type)}</label>
+                  >${ucFirst(getRandomArrayElement(type))}</label>
                 </div>`).join('')}
             </fieldset>
           </div>
