@@ -11,14 +11,17 @@ export default class Presenter {
   }
 
   init() {
+    const boardDestinations = this.pointsModel.getDestinations();
+    const boardOffers = this.pointsModel.getOffers();
+
     this.boardPoints = [...this.pointsModel.getPoints()];
 
     render(new FilterView(), document.querySelector('.trip-controls__filters'));
     render(new SortView(), this.boardContainer);
-    render(new EditFormView({point: this.boardPoints[0]}), this.boardContainer);
+    render(new EditFormView({point: this.boardPoints[0], boardDestinations, boardOffers}), this.boardContainer);
 
     for (let i = 0; i < this.boardPoints.length; i++) {
-      render(new PointView({point: this.boardPoints[i]}), this.boardContainer);
+      render(new PointView({point: this.boardPoints[i], boardDestinations, boardOffers}), this.boardContainer);
     }
   }
 }

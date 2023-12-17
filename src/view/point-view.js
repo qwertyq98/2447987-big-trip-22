@@ -6,16 +6,20 @@ import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(duration);
 
-function createPointTemplate(point) {
+function createPointTemplate(point, destinations, offers) {
   const {
+    destination,
     base_price: price,
     date_from: dateFrom,
     date_to: dateTo,
-    destination: {name},
-    offers: {offers},
     is_favorite: isFavorite,
+    type,
+    offers: offersList,
   } = point;
 
+  const pointDestination = destinations.find((dest) => dest.id === destination);
+  const typeOffers = offers.find((offer) => offer.type === type).offers;
+  const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer.id));
   const dateFromFormat = transformData(dateFrom, DATE_FORMAT);
   const timeFromFormat = transformData(dateFrom, TIME_FORMAT);
   const timeToFormat = transformData(dateTo, TIME_FORMAT);
@@ -26,9 +30,9 @@ function createPointTemplate(point) {
     `<div class="event">
       <time class="event__date" datetime=${dateFromFormat}>${dateFromFormat}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">Drive ${name}</h3>
+      <h3 class="event__title">Drive ${pointDestination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime=${dateFrom}>${timeFromFormat}</time>
@@ -42,7 +46,7 @@ function createPointTemplate(point) {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${offers.map(({price: destinationPrice, title}) => `
+        ${pointOffers.map(({price: destinationPrice, title}) => `
           <li class="event__offer">
             <span class="event__offer-title">${title}</span>
             &plus;&euro;&nbsp;
@@ -64,12 +68,14 @@ function createPointTemplate(point) {
 }
 
 export default class PointView {
-  constructor({point}) {
+  constructor({point, boardDestinations, boardOffers}) {
     this.point = point;
+    this.destinations = boardDestinations;
+    this.offers = boardOffers;
   }
 
   getTemplate() {
-    return createPointTemplate(this.point);
+    return createPointTemplate(this.point, this.destinations, this.offers);
   }
 
   getElement() {
