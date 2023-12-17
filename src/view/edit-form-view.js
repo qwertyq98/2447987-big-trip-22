@@ -12,9 +12,9 @@ function createEditFormTemplate(point, destinations, offers) {
     offers: offersList,
     id,
   } = point;
-  const pointDestination = destinations.find((dest) => dest.id === destination);
-  const typeOffers = offers.find((offer) => offer.type === offerType).offers;
-  const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer.id));
+  const pointDestination = destinations.find((dest) => dest?.id === destination);
+  const typeOffers = offers.find((offer) => offer?.type === offerType).offers;
+  const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer?.id));
 
   return (
     `<form class="event event--edit" action="#" method="post">
@@ -59,7 +59,7 @@ function createEditFormTemplate(point, destinations, offers) {
             id="event-destination-${id}"
             type="text"
             name="event-destination-${id}"
-            value="${pointDestination.name}"
+            value="${pointDestination?.name}"
             list="destination-list-${id}"
           >
           <datalist id="destination-list-${id}">
