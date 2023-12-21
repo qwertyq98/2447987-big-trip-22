@@ -25,15 +25,13 @@ function createPointTemplate(point, destinations, offers) {
   const timeToFormat = transformData(dateTo, TIME_FORMAT);
   const durationOfStay = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
   const durationOfStayFormat = `${durationOfStay.days() > 1 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
-  const renderPointsOffers = (pointsOffers) => {
-    pointsOffers.map(({price: destinationPrice, title}) => `
+  const renderPointsOffers = () => pointOffers.map(({price: destinationPrice, title}) => `
       <li class="event__offer">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${destinationPrice}</span>
       </li>
     `).join('');
-  };
 
   return (
     `<div class="event">
@@ -55,7 +53,7 @@ function createPointTemplate(point, destinations, offers) {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${renderPointsOffers(pointOffers)}
+        ${renderPointsOffers()}
       </ul>
       <button class="event__favorite-btn  ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>
