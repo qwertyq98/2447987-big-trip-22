@@ -1,8 +1,8 @@
 import { DATE_FORMAT, TIME_FORMAT } from '../const.js';
-import { createElement } from '../render.js';
 import { transformData } from '../utils.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import AbstractView from '../framework/view/abstract-view.js';
 
 dayjs.extend(duration);
 
@@ -25,6 +25,15 @@ function createPointTemplate(point, destinations, offers) {
   const timeToFormat = transformData(dateTo, TIME_FORMAT);
   const durationOfStay = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
   const durationOfStayFormat = `${durationOfStay.days() > 1 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
+  const renderPointsOffers = (pointsOffers) => {
+    pointsOffers.map(({price: destinationPrice, title}) => `
+      <li class="event__offer">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${destinationPrice}</span>
+      </li>
+    `).join('');
+  };
 
   return (
     `<div class="event">
@@ -46,13 +55,7 @@ function createPointTemplate(point, destinations, offers) {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${pointOffers.map(({price: destinationPrice, title}) => `
-          <li class="event__offer">
-            <span class="event__offer-title">${title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${destinationPrice}</span>
-          </li>
-        `).join('')}
+        ${renderPointsOffers(pointOffers)}
       </ul>
       <button class="event__favorite-btn  ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -67,26 +70,19 @@ function createPointTemplate(point, destinations, offers) {
   );
 }
 
-export default class PointView {
+export default class PointView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
+
   constructor({point, boardDestinations, boardOffers}) {
-    this.point = point;
-    this.destinations = boardDestinations;
-    this.offers = boardOffers;
+    super();
+    this.#point = point;
+    this.#destinations = boardDestinations;
+    this.#offers = boardOffers;
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point, this.destinations, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createPointTemplate(this.#point, this.#destinations, this.#offers);
   }
 }

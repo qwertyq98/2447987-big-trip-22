@@ -1,6 +1,6 @@
 import { CITIES, FULL_DATE_FORMAT, TIME_FORMAT, TYPES } from '../const.js';
-import { createElement } from '../render.js';
 import { transformData, ucFirst } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createEditFormTemplate(point, destinations, offers) {
   const {
@@ -16,6 +16,74 @@ function createEditFormTemplate(point, destinations, offers) {
   const typeOffers = offers.find((offer) => offer?.type === offerType).offers;
   const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer?.id));
 
+  const renderRoutesTypes = (routesTypes) => {
+    routesTypes.map((type) => `
+      <div class="event__type-item">
+        <input
+          id="event-type-${type}-${id}"
+          class="event__type-input
+          visually-hidden"
+          type="radio"
+          name="event-type"
+          value="${type}"
+          ${offerType === type ? 'checked' : ''}
+        >
+        <label
+          class="event__type-label event__type-label--${type}"
+          for="event-type-${type}-${id}"
+        >${ucFirst(type)}</label>
+      </div>`).join('');
+  };
+  const renderOffersTypes = (offersTypes) => {
+    if(offersTypes.length !== 0) {
+      return `
+        <section class="event__section  event__section--offers">
+          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <div class="event__available-offers">
+            ${offersTypes.map((offerTypes) => `
+              <div class="event__offer-selector">
+                <input
+                  class="event__offer-checkbox
+                  visually-hidden"
+                  id="event-offer-${offerTypes.title}-${id}"
+                  type="checkbox"
+                  name="event-offer-${offerTypes.title}"
+                  ${pointOffers.includes(offerTypes) ? 'checked' : ''}
+                >
+                <label class="event__offer-label" for="event-offer-${offerTypes.title}-${id}">
+                  <span class="event__offer-title">${offerTypes.title}</span>
+                  &plus;&euro;&nbsp;
+                  <span class="event__offer-price">${offerTypes.price}</span>
+                </label>
+              </div>`).join('')}
+          </div>
+        </section>`;
+    } else {
+      return '';
+    }
+  };
+  const renderPointDestination = (pointDest) => {
+    const description = pointDest.description;
+    const pictures = pointDest.pictures;
+
+    if (description !== '' && pictures.length !== 0) {
+      return `
+      <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${description}</p>
+        ${ pictures.length !== 0 ? `
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${pictures.map((picture) => `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </section>`;
+    } else {
+      return '';
+    }
+  };
+
   return (
     `<form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -25,27 +93,10 @@ function createEditFormTemplate(point, destinations, offers) {
             <img class="event__type-icon" width="17" height="17" src="img/icons/${offerType}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
-
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${TYPES.map((type) => `
-                <div class="event__type-item">
-                  <input
-                    id="event-type-${type}-${id}"
-                    class="event__type-input
-                    visually-hidden"
-                    type="radio"
-                    name="event-type"
-                    value="${type}"
-                    ${offerType === type ? 'checked' : ''}
-                  >
-                  <label
-                    class="event__type-label
-                    event__type-label--${type}"
-                    for="event-type-${type}-${id}"
-                  >${ucFirst(type)}</label>
-                </div>`).join('')}
+              ${renderRoutesTypes(TYPES)}
             </fieldset>
           </div>
         </div>
@@ -106,65 +157,26 @@ function createEditFormTemplate(point, destinations, offers) {
         </button>
       </header>
       <section class="event__details">
-        ${typeOffers.length !== 0 ? `
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          <div class="event__available-offers">
-            ${typeOffers.map((typeOffer) => `
-              <div class="event__offer-selector">
-                <input
-                  class="event__offer-checkbox
-                  visually-hidden"
-                  id="event-offer-${typeOffer.title}-${id}"
-                  type="checkbox"
-                  name="event-offer-${typeOffer.title}"
-                  ${pointOffers.includes(typeOffer) ? 'checked' : ''}
-                >
-                <label class="event__offer-label" for="event-offer-${typeOffer.title}-${id}">
-                  <span class="event__offer-title">${typeOffer.title}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${typeOffer.price}</span>
-                </label>
-              </div>`).join('')}
-          </div>
-        </section>` : ''}
-        ${pointDestination.description === '' && pointDestination.pictures.length === 0 ? '' : `
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${pointDestination.description}</p>
-          ${ pointDestination.pictures.length !== 0 ? `
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                ${pointDestination.pictures.map((picture) => `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')}
-              </div>
-            </div>
-          ` : ''}
-        </section>`}
+        ${renderOffersTypes(pointOffers)}
+        ${renderPointDestination(pointDestination)}
       </section>
     </form>`
   );
 }
 
-export default class EditFormView {
+export default class EditFormView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
+
   constructor({ point, boardDestinations, boardOffers }) {
-    this.point = point;
-    this.destinations = boardDestinations;
-    this.offers = boardOffers;
+    super();
+    this.#point = point;
+    this.#destinations = boardDestinations;
+    this.#offers = boardOffers;
   }
 
-  getTemplate() {
-    return createEditFormTemplate(this.point, this.destinations, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditFormTemplate(this.#point, this.#destinations, this.#offers);
   }
 }
