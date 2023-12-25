@@ -3,18 +3,15 @@ import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import { generateFilter } from '../mock/filter.js';
 
-export default class BoardPresenter {
+export default class Presenter {
   #boardContainer = null;
   #pointsModel = null;
   #boardPoints = [];
-  #filters = {};
 
   constructor({boardContainer, pointsModel}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
-    this.#filters = generateFilter(this.#pointsModel.points);
   }
 
   init() {
@@ -23,7 +20,7 @@ export default class BoardPresenter {
 
     this.#boardPoints = [...this.#pointsModel.getPoints()];
 
-    render(new FilterView(this.#filters), document.querySelector('.trip-controls__filters'));
+    render(new FilterView(), document.querySelector('.trip-controls__filters'));
     render(new SortView(), this.#boardContainer);
 
     for (let i = 0; i < this.#boardPoints.length; i++) {
