@@ -4,6 +4,7 @@ import PointView from '../view/point-view.js';
 import { render, replace } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
 import { generateFilter } from '../mock/filter.js';
+import NoPointView from '../view/no-point-view.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -24,6 +25,10 @@ export default class BoardPresenter {
     this.#boardPoints = [...this.#pointsModel.getPoints()];
 
     render(new FilterView(this.#filters), document.querySelector('.trip-controls__filters'));
+    if (this.#pointsModel.points.length === 0) {
+      render(new NoPointView, this.#boardContainer);
+      return;
+    }
     render(new SortView(), this.#boardContainer);
 
     for (let i = 0; i < this.#boardPoints.length; i++) {
