@@ -161,7 +161,7 @@ function createEditFormTemplate(point, destinations, offers) {
         </button>
       </header>
       <section class="event__details">
-        ${renderOffersTypes(pointOffers)}
+        ${renderOffersTypes(typeOffers)}
         ${renderPointDestination(pointDestination)}
       </section>
     </form>`
