@@ -4,6 +4,7 @@ import FilterView from '../view/filter-view.js';
 import { generateFilter } from '../mock/filter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -36,8 +37,8 @@ export default class BoardPresenter {
   }
 
   #renderPoint(point, boardDestinations, boardOffers) {
-    const pointPresenter = new PointPresenter(this.#boardContainer);
-    pointPresenter.init(point, boardDestinations, boardOffers);
+    const pointPresenter = new PointPresenter(this.#boardContainer, this.#handlePointChange, point, boardDestinations, boardOffers);
+    pointPresenter.init(point);
     this.#pointsPresenter.set(point.id, pointPresenter);
   }
 
@@ -58,4 +59,9 @@ export default class BoardPresenter {
   #renderSort() {
     render(new SortView(), this.#boardContainer);
   }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
+    this.#pointsPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
 }
