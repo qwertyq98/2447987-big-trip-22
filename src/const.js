@@ -4,7 +4,7 @@ const SORTS = ['day', 'event', 'time', 'price', 'offers'];
 const POINT_COUNT = 3;
 const DATE_FORMAT = 'D MMM';
 const TIME_FORMAT = 'hh:mm';
-const FULL_DATE_FORMAT = 'YY/MM/DD';
+const FULL_DATE_FORMAT = 'DD/MM/YY';
 const RENDER_POSITION = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -27,6 +27,11 @@ const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
 
 export {
   TYPES,
@@ -40,4 +45,5 @@ export {
   RENDER_POSITION,
   EmptyFiltersList,
   Mode,
+  SortType,
 };
