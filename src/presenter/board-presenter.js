@@ -5,8 +5,9 @@ import { generateFilter } from '../mock/filter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils.js';
-import {SortType} from '../const.js';
-import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../mock/utils/point.js';
+import dayjs from 'dayjs';
+import {FilterType, SortType} from '../const.js';
+import { filterByFuture, filterByPast, filterByPresent, sortPointsByDay, sortPointsByPrice } from '../mock/utils/point.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -16,6 +17,7 @@ export default class BoardPresenter {
   #sortComponent = null;
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #currentFilterType = FilterType.EVERYTHING;
   #sourcedBoardPoints = [];
 
   constructor({boardContainer, pointsModel}) {
@@ -73,13 +75,13 @@ export default class BoardPresenter {
 
   #renderFilters() {
     this.#filters = generateFilter(this.#pointsModel.points);
-    render(new FilterView(this.#filters), document.querySelector('.trip-controls__filters'));
+    render(new FilterView({filters: this.#filters, onFilterTypeChange: this.#handleFilterTypeChange}), document.querySelector('.trip-controls__filters'));
   }
 
   #sortPoints(sortType) {
     switch (sortType) {
       case SortType.TIME:
-        this.#boardPoints.sort(sortPointsByTime);
+        this.#boardPoints.filter((point) => dayjs().isBefore(dayjs(point?.date_from)));
         break;
       case SortType.PRICE:
         this.#boardPoints.sort(sortPointsByPrice);
@@ -93,12 +95,42 @@ export default class BoardPresenter {
     this.#currentSortType = sortType;
   }
 
+  #filterPoints(filterType) {
+    switch (filterType) {
+      case FilterType.FUTURE:
+        this.#boardPoints = filterByFuture(this.#sourcedBoardPoints);
+        break;
+      case FilterType.PAST:
+        this.#boardPoints = filterByPast(this.#sourcedBoardPoints);
+        break;
+      case FilterType.PRESENT:
+        this.#boardPoints = filterByPresent(this.#sourcedBoardPoints);
+        break;
+      case FilterType.EVERYTHING:
+        this.#boardPoints = this.#sourcedBoardPoints;
+        break;
+      default:
+        this.#boardPoints = this.#sourcedBoardPoints;
+    }
+    this.#currentFilterType = filterType;
+  }
+
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
 
     this.#sortPoints(sortType);
+    this.#clearPointsList();
+    this.#renderPointList();
+  };
+
+  #handleFilterTypeChange = (filterType) => {
+    if (this.#currentFilterType === filterType) {
+      return;
+    }
+
+    this.#filterPoints(filterType);
     this.#clearPointsList();
     this.#renderPointList();
   };

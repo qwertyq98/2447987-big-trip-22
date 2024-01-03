@@ -115,8 +115,8 @@ const mockPoints = [
   },
   {
     'base_price': 227,
-    'date_from': '2024-01-26T02:40:04.116Z',
-    'date_to': '2024-01-27T14:49:04.116Z',
+    'date_from': '2024-01-03T02:40:04.116Z',
+    'date_to': '2024-01-03T23:49:04.116Z',
     'destination': '0773b911-a838-4bbf-9f1f-762ae637a74c',
     'isFavorite': true,
     'offers': [

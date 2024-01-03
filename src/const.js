@@ -13,8 +13,8 @@ const RENDER_POSITION = {
 };
 const FilterType = {
   EVERYTHING: 'everything',
-  PRESENT: 'present',
   FUTURE: 'future',
+  PRESENT: 'present',
   PAST: 'past',
 };
 const EmptyFiltersList = {
