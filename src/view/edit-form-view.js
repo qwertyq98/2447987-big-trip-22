@@ -1,5 +1,5 @@
 import { CITIES, FULL_DATE_FORMAT, TIME_FORMAT, TYPES } from '../const.js';
-import { transformData, ucFirst } from '../utils.js';
+import { transformData, ucFirst } from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createEditFormTemplate(point, destinations, offers) {

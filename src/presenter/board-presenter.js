@@ -1,13 +1,13 @@
 import SortView from '../view/sort-view.js';
 import { render } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import { generateFilter } from '../mock/filter.js';
+import { filterByFuture, filterByPast, filterByPresent, generateFilter } from '../utils/filter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
-import { updateItem } from '../utils.js';
+import { updateItem } from '../utils/utils.js';
 import dayjs from 'dayjs';
 import {FilterType, SortType} from '../const.js';
-import { filterByFuture, filterByPast, filterByPresent, sortPointsByDay, sortPointsByPrice } from '../mock/utils/point.js';
+import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -81,7 +81,7 @@ export default class BoardPresenter {
   #sortPoints(sortType) {
     switch (sortType) {
       case SortType.TIME:
-        this.#boardPoints.filter((point) => dayjs().isBefore(dayjs(point?.date_from)));
+        this.#boardPoints.sort(sortPointsByTime);
         break;
       case SortType.PRICE:
         this.#boardPoints.sort(sortPointsByPrice);

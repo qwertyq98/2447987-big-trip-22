@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import AbstractView from '../framework/view/abstract-view.js';
-import { calculateDurationOfStay, transformToDateFromFormat, transformToTimeToFormat } from '../mock/utils/point.js';
+import { calculateDurationOfStay, transformToDateFromFormat, transformToTimeToFormat } from '../utils/utils.js';
 
 dayjs.extend(duration);
 
