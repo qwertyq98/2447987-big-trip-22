@@ -33,4 +33,10 @@ function filterByPresent(points) {
   return points.filter((point) => dayjs().isBetween(dayjs(point?.date_to), dayjs(point?.date_from)));
 }
 
-export {filtersGenerateInfo, generateFilter, filterByFuture, filterByPast, filterByPresent};
+export {
+  filtersGenerateInfo,
+  generateFilter,
+  filterByFuture,
+  filterByPast,
+  filterByPresent
+};
