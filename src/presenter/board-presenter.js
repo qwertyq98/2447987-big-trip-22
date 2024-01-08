@@ -5,7 +5,6 @@ import { filterByFuture, filterByPast, filterByPresent, generateFilter } from '.
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils/utils.js';
-import dayjs from 'dayjs';
 import {FilterType, SortType} from '../const.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort.js';
 
