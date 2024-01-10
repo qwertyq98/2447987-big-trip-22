@@ -40,7 +40,7 @@ export default class FilterView extends AbstractView {
     this.#filters = filters;
     this.#handleFilterTypeChange = onFilterTypeChange;
 
-    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+    this.element.addEventListener('change', this.#filterTypeChangeHandler);
   }
 
   get template() {
@@ -48,7 +48,7 @@ export default class FilterView extends AbstractView {
   }
 
   #filterTypeChangeHandler = (evt) => {
-    if (evt.target.getAttribute('disabled') === '' || evt.target.tagName !== 'LABEL') {
+    if (evt.target.getAttribute('disabled') === '' || evt.target.tagName !== 'INPUT') {
       return;
     }
 

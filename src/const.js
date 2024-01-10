@@ -23,9 +23,10 @@ const EmptyFiltersList = {
   present: 'There are no present events now',
   future: 'There are no future events now',
 };
-const Mode = {
+const ModeType = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+  CREATE_NEW: 'CREATE_NEW:',
 };
 const SortType = {
   DAY: 'day',
@@ -44,6 +45,6 @@ export {
   CITIES,
   RENDER_POSITION,
   EmptyFiltersList,
-  Mode,
+  ModeType,
   SortType,
 };

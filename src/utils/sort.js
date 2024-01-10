@@ -12,7 +12,7 @@ function sortPointsByTime(firstPoint, secondPoint) {
 }
 
 function sortPointsByPrice(firstPoint, secondPoint) {
-  return Number(secondPoint.base_price) - Number(firstPoint.base_price);
+  return Number(secondPoint.basePrice) - Number(firstPoint.basePrice);
 }
 
 export {
