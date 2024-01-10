@@ -1,6 +1,6 @@
 import { SORTS } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { ucFirst } from '../utils.js';
+import { ucFirst } from '../utils/utils.js';
 
 function createSortTemplate() {
   const renderBoardsSorts = () => SORTS.map((sort, index) => `
@@ -14,7 +14,7 @@ function createSortTemplate() {
       ${sort === 'offers' || sort === 'event' ? 'disabled' : ''}
       ${index === 0 ? 'checked' : ''}
     >
-    <label class="trip-sort__btn" for="sort-${sort}">${ucFirst(sort)}</label>
+    <label class="trip-sort__btn" for="sort-${sort}" data-sort-type="${SORTS[index]}">${ucFirst(sort)}</label>
   </div>`).join('');
 
   return (
@@ -25,11 +25,24 @@ function createSortTemplate() {
 }
 
 export default class SortView extends AbstractView {
-  constructor() {
+  #handleSortTypeChange = null;
+
+  constructor({onSortTypeChange}) {
     super();
+    this.#handleSortTypeChange = onSortTypeChange;
+
+    this.element.addEventListener('click', this.#sortTypeChangeHandler);
   }
 
   get template() {
     return createSortTemplate();
   }
+
+  #sortTypeChangeHandler = (evt) => {
+    if (evt.target.tagName !== 'LABEL' || evt.target.dataset.sortType === 'offers' || evt.target.dataset.sortType === 'event') {
+      return;
+    }
+
+    this.#handleSortTypeChange(evt.target.dataset.sortType);
+  };
 }

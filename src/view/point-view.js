@@ -1,8 +1,7 @@
-import { DATE_FORMAT, TIME_FORMAT } from '../const.js';
-import { transformData } from '../utils.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import AbstractView from '../framework/view/abstract-view.js';
+import { calculateDurationOfStay, transformToDateFromFormat, transformToTimeToFormat } from '../utils/utils.js';
 
 dayjs.extend(duration);
 
@@ -12,7 +11,7 @@ function createPointTemplate(point, destinations, offers) {
     base_price: price,
     date_from: dateFrom,
     date_to: dateTo,
-    is_favorite: isFavorite,
+    isFavorite,
     type,
     offers: offersList,
   } = point;
@@ -20,11 +19,8 @@ function createPointTemplate(point, destinations, offers) {
   const pointDestination = destinations.find((dest) => dest.id === destination);
   const typeOffers = offers.find((offer) => offer.type === type).offers;
   const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer.id));
-  const dateFromFormat = transformData(dateFrom, DATE_FORMAT);
-  const timeFromFormat = transformData(dateFrom, TIME_FORMAT);
-  const timeToFormat = transformData(dateTo, TIME_FORMAT);
-  const durationOfStay = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
-  const durationOfStayFormat = `${durationOfStay.days() > 1 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
+  const durationOfStay = calculateDurationOfStay(dateTo, dateFrom);
+  const durationOfStayFormat = `${durationOfStay.days() > 0 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
   const renderPointsOffers = () => pointOffers.map(({price: destinationPrice, title}) => `
       <li class="event__offer">
         <span class="event__offer-title">${title}</span>
@@ -35,16 +31,16 @@ function createPointTemplate(point, destinations, offers) {
 
   return (
     `<div class="event">
-      <time class="event__date" datetime=${dateFromFormat}>${dateFromFormat}</time>
+      <time class="event__date" datetime=${transformToDateFromFormat(dateFrom)}>${transformToDateFromFormat(dateFrom)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">Drive ${pointDestination?.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime=${dateFrom}>${timeFromFormat}</time>
+          <time class="event__start-time" datetime=${dateFrom}>${transformToTimeToFormat(dateFrom)}</time>
           &mdash;
-          <time class="event__end-time" datetime=${dateFrom}>${timeToFormat}</time>
+          <time class="event__end-time" datetime=${dateTo}>${transformToTimeToFormat(dateTo)}</time>
         </p>
         <p class="event__duration">${durationOfStayFormat}</p>
       </div>
@@ -73,15 +69,18 @@ export default class PointView extends AbstractView {
   #destinations = null;
   #offers = null;
   #handleEditClick = null;
+  #handleFavoriteClick = null;
 
-  constructor({point, boardDestinations, boardOffers, onEditClick}) {
+  constructor({point, boardDestinations, boardOffers, onEditClick, onFavoriteClick}) {
     super();
     this.#point = point;
     this.#destinations = boardDestinations;
     this.#offers = boardOffers;
     this.#handleEditClick = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
@@ -91,5 +90,10 @@ export default class PointView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }

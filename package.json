@@ -30,7 +30,8 @@
     "webpack-dev-server": "4.13.3"
   },
   "dependencies": {
-    "dayjs": "1.11.10"
+    "dayjs": "1.11.10",
+    "nanoid": "5.0.3"
   },
   "engines": {
     "node": "20"
