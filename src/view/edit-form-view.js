@@ -8,8 +8,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 function createEditFormTemplate(point, destinations, offers) {
   const {
     basePrice,
-    date_from: dateFrom,
-    date_to: dateTo,
+    dateFrom,
+    dateTo,
     destination,
     type: offerTypeName,
     offers: offersList,
@@ -239,7 +239,7 @@ export default class EditFormView extends AbstractStatefulView {
       {
         dateFormat: 'd/m/y H:i',
         enableTime: true,
-        defaultDate: this._state.date_from,
+        defaultDate: this._state.dateFrom,
         onChange: this.#dateFromChangeHandler,
         ['time_24hr']: true
       },
@@ -249,7 +249,7 @@ export default class EditFormView extends AbstractStatefulView {
       {
         dateFormat: 'd/m/y H:i',
         enableTime: true,
-        defaultDate: this._state.date_to,
+        defaultDate: this._state.dateTo,
         onChange: this.#dateToChangeHandler,
         ['time_24hr']: true
       },
@@ -257,11 +257,11 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   #dateFromChangeHandler = ([dateFrom]) => {
-    this._setState({date_from: dateFrom});
+    this._setState({dateFrom: dateFrom});
   };
 
   #dateToChangeHandler = ([dateTo]) => {
-    this._setState({date_to: dateTo});
+    this._setState({dateTo: dateTo});
   };
 
   #changeTransportTypeHandler = (evt) => {

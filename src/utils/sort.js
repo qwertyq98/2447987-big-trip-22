@@ -4,11 +4,11 @@ import { calculateDurationOfStay } from './utils';
 dayjs.extend(isBetween);
 
 function sortPointsByDay(firstPoint, secondPoint) {
-  return dayjs(firstPoint.date_from) - dayjs(secondPoint.date_from);
+  return dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom);
 }
 
 function sortPointsByTime(firstPoint, secondPoint) {
-  return calculateDurationOfStay(secondPoint.date_to, secondPoint.date_from).$ms - calculateDurationOfStay(firstPoint.date_to, firstPoint.date_from).$ms;
+  return calculateDurationOfStay(secondPoint.dateTo, secondPoint.dateFrom).$ms - calculateDurationOfStay(firstPoint.dateTo, firstPoint.dateFrom).$ms;
 }
 
 function sortPointsByPrice(firstPoint, secondPoint) {

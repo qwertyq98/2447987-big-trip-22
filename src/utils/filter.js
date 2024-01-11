@@ -7,9 +7,9 @@ const checkIsPointAfter = (date) => dayjs(date).isAfter(dayjs(), 'D');
 
 const filtersGenerateInfo = {
   [FilterType.EVERYTHING]: (points) => points,
-  [FilterType.FUTURE]: (points) => points?.filter((point) => checkIsPointAfter(point.date_from)),
-  [FilterType.PRESENT]: (points) => points?.filter((point) => checkIsPointSame(point.date_from)),
-  [FilterType.PAST]: (points) => points?.filter((point) => checkIsPointBefore(point.date_from)),
+  [FilterType.FUTURE]: (points) => points?.filter((point) => checkIsPointAfter(point.dateFrom)),
+  [FilterType.PRESENT]: (points) => points?.filter((point) => checkIsPointSame(point.dateFrom)),
+  [FilterType.PAST]: (points) => points?.filter((point) => checkIsPointBefore(point.dateFrom)),
 };
 
 function generateFilter(points) {
@@ -22,15 +22,15 @@ function generateFilter(points) {
 }
 
 function filterByFuture(points) {
-  return points.filter((point) => dayjs().isBefore(dayjs(point?.date_from)));
+  return points.filter((point) => dayjs().isBefore(dayjs(point?.dateFrom)));
 }
 
 function filterByPast(points) {
-  return points.filter((point) => dayjs().isAfter(dayjs(point?.date_to)));
+  return points.filter((point) => dayjs().isAfter(dayjs(point?.dateTo)));
 }
 
 function filterByPresent(points) {
-  return points.filter((point) => dayjs().isBetween(dayjs(point?.date_to), dayjs(point?.date_from)));
+  return points.filter((point) => dayjs().isBetween(dayjs(point?.dateTo), dayjs(point?.dateFrom)));
 }
 
 export {

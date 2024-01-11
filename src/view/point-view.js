@@ -9,8 +9,8 @@ function createPointTemplate(point, destinations, offers) {
   const {
     destination,
     basePrice,
-    date_from: dateFrom,
-    date_to: dateTo,
+    dateFrom,
+    dateTo,
     isFavorite,
     type,
     offers: offersList,
