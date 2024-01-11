@@ -274,12 +274,16 @@ export default class EditFormView extends AbstractStatefulView {
     this._setState({basePrice: evt.target.value});
   };
 
+  #addOffers(offers, offer) {
+    return offers.push(offer);
+  }
+
   #selectOfferHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
       if (evt.target.checked) {
-        this._state.offers.push(evt.target.dataset.offerId);
+        this._setState({offers: [...this._state.offers, evt.target.dataset.offerId]});
       } else {
-        this._state.offers = this._state.offers.filter((offer) => offer !== evt.target.dataset.offerId);
+        this._setState({offers: this._state.offers.filter((offer) => offer !== evt.target.dataset.offerId)});
       }
       this.updateElement(this._state.offers);
     }
