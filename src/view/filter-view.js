@@ -14,11 +14,11 @@ function createFilterTemplate(filters) {
       value="${type}"
       ${count === 0 ? 'disabled = ' : ''}
       ${index === 0 ? 'checked' : ''}
+      data-filter-type="${filtersNames[index]}"
     >
     <label
       class="trip-filters__filter-label"
       for="filter-${type}"
-      data-filter-type="${filtersNames[index]}"
       ${count === 0 ? 'disabled = ' : ''}
     >${ucFirst(type)}</label>
   </div>`).join('');

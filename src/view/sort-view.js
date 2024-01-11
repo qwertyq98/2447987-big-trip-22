@@ -13,8 +13,9 @@ function createSortTemplate() {
       value="sort-${sort}"
       ${sort === 'offers' || sort === 'event' ? 'disabled' : ''}
       ${index === 0 ? 'checked' : ''}
+      data-sort-type="${SORTS[index]}"
     >
-    <label class="trip-sort__btn" for="sort-${sort}" data-sort-type="${SORTS[index]}">${ucFirst(sort)}</label>
+    <label class="trip-sort__btn" for="sort-${sort}">${ucFirst(sort)}</label>
   </div>`).join('');
 
   return (

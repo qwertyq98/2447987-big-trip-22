@@ -1,6 +1,9 @@
 import { CITIES, FULL_DATE_FORMAT, TIME_FORMAT, TYPES } from '../const.js';
 import { transformData, ucFirst } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createEditFormTemplate(point, destinations, offers) {
   const {
@@ -175,6 +178,8 @@ export default class EditFormView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #point = null;
   #handleFormClose = null;
+  #dateFrom = null;
+  #dateTo = null;
   constructor({ point, boardDestinations, boardOffers, onFormSubmit, onCloseForm }) {
     super();
     this.#point = point;
@@ -193,6 +198,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTransportTypeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#selectOfferHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHeandler);
+    this.#setDatepicker();
   }
 
   get template() {
@@ -203,6 +209,20 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement({...this.#point, ...this.#offers});
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFrom) {
+      this.#dateFrom.destroy();
+      this.#dateFrom = null;
+    }
+
+    if (this.#dateTo) {
+      this.#dateTo.destroy();
+      this.#dateTo = null;
+    }
+  }
+
   #formCloseHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormClose();
@@ -211,6 +231,37 @@ export default class EditFormView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit({...this._state});
+  };
+
+  #setDatepicker() {
+    this.#dateFrom = flatpickr(
+      this.element.querySelector(`#event-start-time-${this.#point.id}`),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        defaultDate: this._state.date_from,
+        onChange: this.#dateFromChangeHandler,
+        ['time_24hr']: true
+      },
+    );
+    this.#dateTo = flatpickr(
+      this.element.querySelector(`#event-end-time-${this.#point.id}`),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        defaultDate: this._state.date_to,
+        onChange: this.#dateToChangeHandler,
+        ['time_24hr']: true
+      },
+    );
+  }
+
+  #dateFromChangeHandler = ([dateFrom]) => {
+    this._setState({date_from: dateFrom});
+  };
+
+  #dateToChangeHandler = ([dateTo]) => {
+    this._setState({date_to: dateTo});
   };
 
   #changeTransportTypeHandler = (evt) => {
