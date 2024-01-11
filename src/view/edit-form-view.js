@@ -173,19 +173,22 @@ export default class EditFormView extends AbstractStatefulView {
   #destinations = null;
   #offers = null;
   #handleFormSubmit = null;
-
-  constructor({ point, boardDestinations, boardOffers, onFormSubmit}) {
+  #point = null;
+  #handleFormClose = null;
+  constructor({ point, boardDestinations, boardOffers, onFormSubmit, onCloseForm }) {
     super();
+    this.#point = point;
     this.#destinations = boardDestinations;
     this._setState(point);
     this.#offers = boardOffers;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormClose = onCloseForm;
     this._restoreHandlers();
   }
 
   _restoreHandlers() {
     this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
     this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTransportTypeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#selectOfferHandler);
@@ -195,6 +198,15 @@ export default class EditFormView extends AbstractStatefulView {
   get template() {
     return createEditFormTemplate(this._state, this.#destinations, this.#offers);
   }
+
+  reset() {
+    this.updateElement({...this.#point, ...this.#offers});
+  }
+
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClose();
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();

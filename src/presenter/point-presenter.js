@@ -41,6 +41,7 @@ export default class PointPresenter {
       boardDestinations: this.#boardDestinations,
       boardOffers: this.#boardOffers,
       onFormSubmit: this.#handleFormSubmit,
+      onCloseForm: this.#buttonCloseHandler,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -67,13 +68,20 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== ModeType.DEFAULT) {
+      this.#pointEditComponent.reset();
       this.#replaceFormToPoint();
     }
   }
 
+  #buttonCloseHandler = () => {
+    this.#pointEditComponent.reset();
+    this.#replaceFormToPoint();
+  };
+
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#pointEditComponent.reset();
       this.#replaceFormToPoint();
     }
   };
