@@ -12,7 +12,7 @@ export default class PointPresenter {
   #boardDestinations = null;
   #point = null;
   #handleModeChange = null;
-  #mode = ModeType.DEFAULT;
+  #modeType = ModeType.VIEWING;
 
   constructor(boardContainer, onFavoriteChange, point, boardDestinations, boardOffers, onModeChange) {
     this.#boardContainer = boardContainer;
@@ -49,11 +49,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#mode === ModeType.DEFAULT) {
+    if (this.#modeType === ModeType.VIEWING) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#mode === ModeType.EDITING) {
+    if (this.#modeType === ModeType.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
@@ -67,7 +67,7 @@ export default class PointPresenter {
   }
 
   resetView() {
-    if (this.#mode !== ModeType.DEFAULT) {
+    if (this.#modeType !== ModeType.VIEWING) {
       this.#pointEditComponent.reset();
       this.#replaceFormToPoint();
     }
@@ -90,13 +90,13 @@ export default class PointPresenter {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handleModeChange();
-    this.#mode = ModeType.EDITING;
+    this.#modeType = ModeType.EDITING;
   }
 
   #replaceFormToPoint() {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = ModeType.DEFAULT;
+    this.#modeType = ModeType.VIEWING;
   }
 
   #handleEditClick = () => {

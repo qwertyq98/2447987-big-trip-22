@@ -193,11 +193,11 @@ export default class EditFormView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
-    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTransportTypeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#selectOfferHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHeandler);
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#formCloseHandler);
+    this.element.querySelector('.event__save-btn')?.addEventListener('click', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-group')?.addEventListener('change', this.#changeTransportTypeHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#selectOfferHandler);
+    this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceInputHandler);
     this.#setDatepicker();
   }
 
@@ -269,7 +269,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement({type: evt.target.value, offers: []});
   };
 
-  #priceInputHeandler = (evt) => {
+  #priceInputHandler = (evt) => {
     evt.preventDefault();
     this._setState({basePrice: evt.target.value});
   };

@@ -2,7 +2,7 @@ const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 's
 const CITIES = ['Hiroshima', 'Kopenhagen', 'Berlin', 'Nagasaki', 'Den Haag', 'Geneva', 'Munich', 'Moscow', 'Rotterdam', 'Monaco'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
 const POINT_COUNT = 3;
-const DATE_FORMAT = 'D MMM';
+const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'hh:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY';
 const RENDER_POSITION = {
@@ -24,9 +24,9 @@ const EmptyFiltersList = {
   future: 'There are no future events now',
 };
 const ModeType = {
-  DEFAULT: 'DEFAULT',
+  VIEWING: 'VIEWING',
   EDITING: 'EDITING',
-  CREATE_NEW: 'CREATE_NEW:',
+  CREATE_NEW: 'CREATE_NEW',
 };
 const SortType = {
   DAY: 'day',

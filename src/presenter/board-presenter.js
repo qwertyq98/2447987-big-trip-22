@@ -25,7 +25,7 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#boardPoints = [...this.#pointsModel.points.sort(sortPointsByDay)];
+    this.#boardPoints = [...this.#pointsModel.points].sort(sortPointsByDay);
     this.#sourcedBoardPoints = [...this.#pointsModel.points];
 
     this.#renderFilters();
