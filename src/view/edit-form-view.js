@@ -251,13 +251,15 @@ export default class EditFormView extends AbstractStatefulView {
         enableTime: true,
         defaultDate: this._state.dateTo,
         onChange: this.#dateToChangeHandler,
-        ['time_24hr']: true
+        ['time_24hr']: true,
+        minDate: this._state.dateFrom,
       },
     );
   }
 
   #dateFromChangeHandler = ([dateFrom]) => {
     this._setState({dateFrom: dateFrom});
+    this.#dateTo.set('minDate', dateFrom);
   };
 
   #dateToChangeHandler = ([dateTo]) => {
@@ -273,10 +275,6 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     this._setState({basePrice: evt.target.value});
   };
-
-  #addOffers(offers, offer) {
-    return offers.push(offer);
-  }
 
   #selectOfferHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
