@@ -32,15 +32,15 @@ export default class PointPresenter {
       point: this.#point,
       boardDestinations: this.#boardDestinations,
       boardOffers: this.#boardOffers,
-      onEditClick: this.#handleEditClick,
-      onFavoriteClick: this.#toggleFavoriteState,
+      onEditClick: this.#editClickHandler,
+      onFavoriteClick: this.#toggleFavoriteStateHandler,
     });
 
     this.#pointEditComponent = new EditFormView({
       point: {...this.#point},
       boardDestinations: this.#boardDestinations,
       boardOffers: this.#boardOffers,
-      onFormSubmit: this.#handleFormSubmit,
+      onFormSubmit: this.#formSubmitHandler,
       onCloseForm: this.#buttonCloseHandler,
     });
 
@@ -99,16 +99,16 @@ export default class PointPresenter {
     this.#modeType = ModeType.VIEWING;
   }
 
-  #handleEditClick = () => {
+  #editClickHandler = () => {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = (point) => {
+  #formSubmitHandler = (point) => {
     this.#handleFavotiteChange(point);
     this.#replaceFormToPoint();
   };
 
-  #toggleFavoriteState = () => {
+  #toggleFavoriteStateHandler = () => {
     this.#handleFavotiteChange({...this.#point, isFavorite: !this.#point.isFavorite});
   };
 }

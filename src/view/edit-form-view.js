@@ -198,6 +198,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#changeTransportTypeHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#selectOfferHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationInputHandler);
     this.#setDatepicker();
   }
 
@@ -284,6 +285,13 @@ export default class EditFormView extends AbstractStatefulView {
         this._setState({offers: this._state.offers.filter((offer) => offer !== evt.target.dataset.offerId)});
       }
       this.updateElement(this._state.offers);
+    }
+  };
+
+  #destinationInputHandler = (evt) => {
+    if (evt.target.tagName === 'INPUT') {
+      const newDestination = this.#destinations.find((dest) => dest?.name === evt.target.value);
+      this.updateElement({destination: newDestination.id});
     }
   };
 }
