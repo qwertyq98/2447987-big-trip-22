@@ -115,7 +115,7 @@ function createEditFormTemplate(point, destinations, offers) {
         id="event-destination-${id}"
         type="text"
         name="event-destination"
-        value=${pointDestination?.name || ''}
+        value="${pointDestination?.name || ''}"
         list="destination-list-${id}"
       >
       <datalist id="destination-list-${id}">
