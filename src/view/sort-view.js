@@ -13,8 +13,9 @@ function createSortTemplate() {
       value="sort-${sort}"
       ${sort === 'offers' || sort === 'event' ? 'disabled' : ''}
       ${index === 0 ? 'checked' : ''}
+      data-sort-type="${SORTS[index]}"
     >
-    <label class="trip-sort__btn" for="sort-${sort}" data-sort-type="${SORTS[index]}">${ucFirst(sort)}</label>
+    <label class="trip-sort__btn" for="sort-${sort}">${ucFirst(sort)}</label>
   </div>`).join('');
 
   return (
@@ -31,7 +32,7 @@ export default class SortView extends AbstractView {
     super();
     this.#handleSortTypeChange = onSortTypeChange;
 
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('change', this.#sortTypeChangeHandler);
   }
 
   get template() {
@@ -39,7 +40,7 @@ export default class SortView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'LABEL' || evt.target.dataset.sortType === 'offers' || evt.target.dataset.sortType === 'event') {
+    if (evt.target.tagName !== 'INPUT' || evt.target.dataset.sortType === 'offers' || evt.target.dataset.sortType === 'event') {
       return;
     }
 

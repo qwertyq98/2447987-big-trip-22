@@ -2,9 +2,9 @@ import { getRandomArrayElement } from '../utils/utils.js';
 
 const mockPoints = [
   {
-    'base_price': 1100,
-    'date_from': '2019-07-11T11:22:13.375Z',
-    'date_to': '2019-07-12T17:50:13.375Z',
+    'basePrice': 1100,
+    'dateFrom': '2019-07-11T11:22:13.375Z',
+    'dateTo': '2019-07-12T17:50:13.375Z',
     'isFavorite': false,
     'type': 'bus',
     'destination': '8b3a92c1-b937-4192-bd7f-947a1162deff',
@@ -13,9 +13,9 @@ const mockPoints = [
     ],
   },
   {
-    'base_price': 5600,
-    'date_from': '2023-05-30T03:42:13.375Z',
-    'date_to': '2023-05-31T17:18:13.375Z',
+    'basePrice': 5600,
+    'dateFrom': '2023-05-30T03:42:13.375Z',
+    'dateTo': '2023-05-31T17:18:13.375Z',
     'isFavorite': true,
     'type': 'taxi',
     'destination': '405da16f-1d95-4389-8cd3-850147dceefa',
@@ -26,18 +26,18 @@ const mockPoints = [
     ],
   },
   {
-    'base_price': 700,
-    'date_from': '2024-04-12T09:58:13.375Z',
-    'date_to': '2024-04-14T18:01:13.375Z',
+    'basePrice': 700,
+    'dateFrom': '2024-04-12T09:58:13.375Z',
+    'dateTo': '2024-04-14T18:01:13.375Z',
     'isFavorite': true,
     'type': 'sightseeing',
     'destination': '01ca66e8-0a93-4bab-b676-a5a6d734b66e',
     'offers': [],
   },
   {
-    'base_price': 5654,
-    'date_from': '2024-01-08T04:28:04.116Z',
-    'date_to': '2024-01-09T21:20:04.116Z',
+    'basePrice': 5654,
+    'dateFrom': '2024-01-08T04:28:04.116Z',
+    'dateTo': '2024-01-09T21:20:04.116Z',
     'destination': '74b376dd-84a9-4e34-a860-42836e174d12',
     'isFavorite': true,
     'offers': [
@@ -47,9 +47,9 @@ const mockPoints = [
     'type': 'taxi'
   },
   {
-    'base_price': 6802,
-    'date_from': '2024-01-10T08:39:04.116Z',
-    'date_to': '2024-01-11T08:14:04.116Z',
+    'basePrice': 6802,
+    'dateFrom': '2024-01-10T08:39:04.116Z',
+    'dateTo': '2024-01-11T08:14:04.116Z',
     'destination': '8b3a92c1-b937-4192-bd7f-947a1162deff',
     'isFavorite': false,
     'offers': [
@@ -60,27 +60,27 @@ const mockPoints = [
     'type': 'taxi'
   },
   {
-    'base_price': 4710,
-    'date_from': '2024-01-17T06:22:04.116Z',
-    'date_to': '2024-01-18T23:26:04.116Z',
+    'basePrice': 4710,
+    'dateFrom': '2024-01-17T06:22:04.116Z',
+    'dateTo': '2024-01-18T23:26:04.116Z',
     'destination': '01ca66e8-0a93-4bab-b676-a5a6d734b66e',
     'isFavorite': true,
     'offers': [],
     'type': 'drive'
   },
   {
-    'base_price': 8310,
-    'date_from': '2024-01-19T08:30:04.116Z',
-    'date_to': '2024-01-20T08:03:04.116Z',
+    'basePrice': 8310,
+    'dateFrom': '2024-01-19T08:30:04.116Z',
+    'dateTo': '2024-01-20T08:03:04.116Z',
     'destination': '405da16f-1d95-4389-8cd3-850147dceefa',
     'isFavorite': true,
     'offers': [],
     'type': 'train'
   },
   {
-    'base_price': 5675,
-    'date_from': '2024-01-21T05:44:04.116Z',
-    'date_to': '2024-01-21T20:05:04.116Z',
+    'basePrice': 5675,
+    'dateFrom': '2024-01-21T05:44:04.116Z',
+    'dateTo': '2024-01-21T20:05:04.116Z',
     'destination': '5eb9455e-c256-476d-ac93-58e32d3b4c31',
     'isFavorite': true,
     'offers': [
@@ -89,9 +89,9 @@ const mockPoints = [
     'type': 'bus'
   },
   {
-    'base_price': 8649,
-    'date_from': '2024-01-22T05:21:04.116Z',
-    'date_to': '2024-01-23T01:05:04.116Z',
+    'basePrice': 8649,
+    'dateFrom': '2024-01-22T05:21:04.116Z',
+    'dateTo': '2024-01-23T01:05:04.116Z',
     'destination': '8b3a92c1-b937-4192-bd7f-947a1162deff',
     'isFavorite': true,
     'offers': [
@@ -101,9 +101,9 @@ const mockPoints = [
     'type': 'drive'
   },
   {
-    'base_price': 3934,
-    'date_from': '2024-01-24T00:56:04.116Z',
-    'date_to': '2024-01-24T11:38:04.116Z',
+    'basePrice': 3934,
+    'dateFrom': '2024-01-24T00:56:04.116Z',
+    'dateTo': '2024-01-24T11:38:04.116Z',
     'destination': '74b376dd-84a9-4e34-a860-42836e174d12',
     'isFavorite': false,
     'offers': [
@@ -114,9 +114,9 @@ const mockPoints = [
     'type': 'taxi'
   },
   {
-    'base_price': 227,
-    'date_from': '2024-01-03T02:40:04.116Z',
-    'date_to': '2024-01-03T23:49:04.116Z',
+    'basePrice': 227,
+    'dateFrom': '2024-01-03T02:40:04.116Z',
+    'dateTo': '2024-01-03T23:49:04.116Z',
     'destination': '0773b911-a838-4bbf-9f1f-762ae637a74c',
     'isFavorite': true,
     'offers': [
