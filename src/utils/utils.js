@@ -12,7 +12,6 @@ const getRandomArrayElement = (arr) => {
   return {...item, id: nanoid()};
 };
 const ucFirst = (str) => str[0]?.toUpperCase() + str?.slice(1);
-const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
 export {
   transformData,
@@ -22,5 +21,4 @@ export {
   calculateDurationOfStay,
   getRandomArrayElement,
   ucFirst,
-  updateItem,
 };

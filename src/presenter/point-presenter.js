@@ -2,6 +2,7 @@ import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { ModeType } from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 
 export default class PointPresenter {
   #boardContainer = null;
@@ -104,7 +105,11 @@ export default class PointPresenter {
   };
 
   #formSubmitHandler = (point) => {
-    this.#handleFavotiteChange(point);
+    this.#handleFavotiteChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this.#replaceFormToPoint();
   };
 
