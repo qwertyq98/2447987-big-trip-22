@@ -12,6 +12,9 @@ const getRandomArrayElement = (arr) => {
   return {...item, id: nanoid()};
 };
 const ucFirst = (str) => str[0]?.toUpperCase() + str?.slice(1);
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+}
 
 export {
   transformData,
@@ -21,4 +24,5 @@ export {
   calculateDurationOfStay,
   getRandomArrayElement,
   ucFirst,
+  isDatesEqual,
 };

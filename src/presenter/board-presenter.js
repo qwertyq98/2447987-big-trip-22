@@ -1,5 +1,5 @@
 import SortView from '../view/sort-view.js';
-import { render } from '../framework/render.js';
+import { remove, render } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
 import { filterByFuture, filterByPast, filterByPresent, generateFilter } from '../utils/filter.js';
 import NoPointView from '../view/no-point-view.js';
@@ -24,14 +24,8 @@ export default class BoardPresenter {
 
   init() {
     this.#renderFilters();
-    if (this.#pointsModel.points.length === 0) {
-      this.#renderNoPoints();
-      return;
-    }
-    this.#renderSort();
-    this.#renderPointList();
+    this.#renderBoard();
   }
-
 
   get points() {
     switch (this.#currentSortType) {
@@ -46,11 +40,16 @@ export default class BoardPresenter {
     }
   }
 
-  #renderPointList() {
+  #renderBoard() {
     const boardDestinations = this.#pointsModel.destinations;
     const boardOffers = this.#pointsModel.offers;
     const points = this.points;
 
+    if (this.#pointsModel.points.length === 0) {
+      this.#renderNoPoints();
+      return;
+    }
+    this.#renderSort();
     for (let i = 0; i < points.length; i++) {
       this.#renderPoint(points[i], boardDestinations, boardOffers);
     }
@@ -67,7 +66,7 @@ export default class BoardPresenter {
       point,
       boardDestinations,
       boardOffers,
-      this.#handleModeChange
+      this.#handleModeChange,
     );
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -75,11 +74,6 @@ export default class BoardPresenter {
 
   #renderNoPoints() {
     render(new NoPointView, this.#boardContainer);
-  }
-
-  #clearPointsList() {
-    this.#pointPresenters.forEach((presenter) => presenter.destroy());
-    this.#pointPresenters.clear();
   }
 
   #renderFilters() {
@@ -113,8 +107,8 @@ export default class BoardPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearPointsList();
-    this.#renderPointList();
+    this.#clearBoard({resetRenderedTaskCount: true});
+    this.#renderBoard();
   };
 
   #handleFilterTypeChange = (filterType) => {
@@ -123,27 +117,38 @@ export default class BoardPresenter {
     }
 
     this.#filterPoints(filterType);
-    this.#clearPointsList();
-    this.#renderPointList();
+    this.#clearBoard({resetRenderedTaskCount: true});
+    this.#renderBoard();
   };
 
   #renderSort() {
     this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
     render(this.#sortComponent, this.#boardContainer);
   }
 
+  #clearBoard({resetSortType = false} = {}) {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+    remove(this.#sortComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  }
+
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updateTask(updateType, update);
+        this.#pointsModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addTask(updateType, update);
+        this.#pointsModel.addPoint(updateType, update);
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deleteTask(updateType, update);
+        this.#pointsModel.deletePoint(updateType, update);
         break;
     }
   };
@@ -156,9 +161,13 @@ export default class BoardPresenter {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
