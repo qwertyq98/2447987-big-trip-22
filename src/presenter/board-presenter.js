@@ -78,7 +78,11 @@ export default class BoardPresenter {
 
   #renderFilters() {
     this.#filters = generateFilter(this.#pointsModel.points);
-    render(new FilterView({filters: this.#filters, onFilterTypeChange: this.#handleFilterTypeChange}), document.querySelector('.trip-controls__filters'));
+    render(new FilterView({
+      filters: this.#filters,
+      onFilterTypeChange: this.#handleFilterTypeChange,
+      currentFilterType: FilterType.EVERYTHING,
+    }), document.querySelector('.trip-controls__filters'));
   }
 
   #filterPoints(filterType) {
