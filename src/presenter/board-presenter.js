@@ -1,42 +1,63 @@
 import SortView from '../view/sort-view.js';
 import { remove, render } from '../framework/render.js';
-import FilterView from '../view/filter-view.js';
-import { filterByFuture, filterByPast, filterByPresent, generateFilter } from '../utils/filter.js';
+import { filterByFuture, filterByPast, filterByPresent, filtersGenerateInfo } from '../utils/filter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort.js';
+import FilterPresenter from './filter-presenter.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
   #pointsModel = null;
-  #filters = {};
+  #filterModel = null;
   #sortComponent = null;
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
-  #currentFilterType = FilterType.EVERYTHING;
 
-  constructor({boardContainer, pointsModel}) {
+  constructor({boardContainer, pointsModel, filterModel}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
-    this.#renderFilters();
     this.#renderBoard();
+    this.#renderFilters();
   }
 
   get points() {
+    const points = this.#filterPoints(this.#pointsModel.points);
+
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return [...this.#pointsModel.points].sort(sortPointsByTime);
+        return [...points].sort(sortPointsByTime);
       case SortType.PRICE:
-        return [...this.#pointsModel.points].sort(sortPointsByPrice);
+        return [...points].sort(sortPointsByPrice);
       case SortType.DAY:
-        return [...this.#pointsModel.points].sort(sortPointsByDay);
+        return [...points].sort(sortPointsByDay);
       default:
-        return [...this.#pointsModel.points].sort(sortPointsByDay);
+        return [...points].sort(sortPointsByDay);
+    }
+  }
+
+  #filterPoints(points) {
+    const filterType = this.#filterModel.filter;
+    const filteredPoints = filtersGenerateInfo[filterType](points);
+
+    switch (filterType) {
+      case FilterType.FUTURE:
+        return filterByFuture(filteredPoints);
+      case FilterType.PAST:
+        return filterByPast(filteredPoints);
+      case FilterType.PRESENT:
+        return filterByPresent(filteredPoints);
+      case FilterType.EVERYTHING:
+        return filteredPoints;
+      default:
+        return filteredPoints;
     }
   }
 
@@ -49,6 +70,7 @@ export default class BoardPresenter {
       this.#renderNoPoints();
       return;
     }
+
     this.#renderSort();
     for (let i = 0; i < points.length; i++) {
       this.#renderPoint(points[i], boardDestinations, boardOffers);
@@ -58,6 +80,17 @@ export default class BoardPresenter {
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
+
+  #renderFilters() {
+    const siteHeaderElement = document.querySelector('.trip-controls__filters');
+    const filterPresenter = new FilterPresenter({
+      filterContainer: siteHeaderElement,
+      filterModel: this.#filterModel,
+      pointsModel: this.#pointsModel,
+    });
+
+    filterPresenter.init();
+  }
 
   #renderPoint(point, boardDestinations, boardOffers) {
     const pointPresenter = new PointPresenter(
@@ -76,51 +109,12 @@ export default class BoardPresenter {
     render(new NoPointView, this.#boardContainer);
   }
 
-  #renderFilters() {
-    this.#filters = generateFilter(this.#pointsModel.points);
-    render(new FilterView({
-      filters: this.#filters,
-      onFilterTypeChange: this.#handleFilterTypeChange,
-      currentFilterType: FilterType.EVERYTHING,
-    }), document.querySelector('.trip-controls__filters'));
-  }
-
-  #filterPoints(filterType) {
-    switch (filterType) {
-      case FilterType.FUTURE:
-        [...this.#pointsModel.points] = filterByFuture(this.#pointsModel.points);
-        break;
-      case FilterType.PAST:
-        [...this.#pointsModel.points] = filterByPast(this.#pointsModel.points);
-        break;
-      case FilterType.PRESENT:
-        [...this.#pointsModel.points] = filterByPresent(this.#pointsModel.points);
-        break;
-      case FilterType.EVERYTHING:
-        [...this.#pointsModel.points] = this.#pointsModel.points;
-        break;
-      default:
-        [...this.#pointsModel.points] = this.#pointsModel.points;
-    }
-    this.#currentFilterType = filterType;
-  }
-
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
 
     this.#currentSortType = sortType;
-    this.#clearBoard({resetRenderedTaskCount: true});
-    this.#renderBoard();
-  };
-
-  #handleFilterTypeChange = (filterType) => {
-    if (this.#currentFilterType === filterType) {
-      return;
-    }
-
-    this.#filterPoints(filterType);
     this.#clearBoard({resetRenderedTaskCount: true});
     this.#renderBoard();
   };
@@ -160,16 +154,13 @@ export default class BoardPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
         this.#clearBoard();
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
         break;
