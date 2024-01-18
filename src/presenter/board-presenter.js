@@ -14,6 +14,7 @@ export default class BoardPresenter {
   #sortComponent = null;
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #noPointComponent = null;
 
   constructor({boardContainer, pointsModel, filterModel}) {
     this.#boardContainer = boardContainer;
@@ -46,6 +47,7 @@ export default class BoardPresenter {
   #filterPoints(points) {
     const filterType = this.#filterModel.filter;
     const filteredPoints = filtersGenerateInfo[filterType](points);
+    [...points].sort(sortPointsByDay);
 
     switch (filterType) {
       case FilterType.FUTURE:
@@ -66,7 +68,7 @@ export default class BoardPresenter {
     const boardOffers = this.#pointsModel.offers;
     const points = this.points;
 
-    if (this.#pointsModel.points.length === 0) {
+    if (filtersGenerateInfo[this.#filterModel.filter](points).length === 0) {
       this.#renderNoPoints();
       return;
     }
@@ -106,7 +108,8 @@ export default class BoardPresenter {
   }
 
   #renderNoPoints() {
-    render(new NoPointView, this.#boardContainer);
+    this.#noPointComponent = new NoPointView(this.#filterModel.filter);
+    render(this.#noPointComponent, this.#boardContainer);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -131,6 +134,9 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
     remove(this.#sortComponent);
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
