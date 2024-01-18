@@ -47,15 +47,14 @@ export default class BoardPresenter {
   #filterPoints(points) {
     const filterType = this.#filterModel.filter;
     const filteredPoints = filtersGenerateInfo[filterType](points);
-    [...points].sort(sortPointsByDay);
 
     switch (filterType) {
       case FilterType.FUTURE:
         return filterByFuture(filteredPoints);
-      case FilterType.PAST:
-        return filterByPast(filteredPoints);
       case FilterType.PRESENT:
         return filterByPresent(filteredPoints);
+      case FilterType.PAST:
+        return filterByPast(filteredPoints);
       case FilterType.EVERYTHING:
         return filteredPoints;
       default:
@@ -168,6 +167,7 @@ export default class BoardPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
+        this.#currentSortType = SortType.DAY;
         this.#renderBoard();
         break;
     }

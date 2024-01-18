@@ -4,6 +4,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
 
 function createEditFormTemplate(point, destinations, offers) {
   const {
@@ -150,7 +151,7 @@ function createEditFormTemplate(point, destinations, offers) {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
+      <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
     </div>`;
 
   return (
@@ -199,7 +200,7 @@ export default class FormView extends AbstractStatefulView {
     this.element.querySelector('.event__save-btn')?.addEventListener('click', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#changeTransportTypeHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#selectOfferHandler);
-    this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__input--price')?.addEventListener('change', this.#priceInputHandler);
     this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
     this.#setDatepicker();
@@ -268,14 +269,14 @@ export default class FormView extends AbstractStatefulView {
   }
 
   #dateFromChangeHandler = ([dateFrom, dateTo]) => {
-    this._setState({dateFrom: dateFrom});
-    this.#dateTo.set('minDate', dateFrom);
-    this.#dateFrom.set({'maxDate': dateTo});
+    this._setState({dateFrom: dayjs(dateFrom).$d.toISOString()});
+    this.#dateTo.set('minDate', dayjs(dateFrom).$d.toISOString());
+    this.#dateFrom.set({'maxDate': dayjs(dateTo).$d.toISOString()});
   };
 
   #dateToChangeHandler = ([dateTo]) => {
-    this._setState({dateTo: dateTo});
-    this.#dateFrom.set({'maxDate': dateTo});
+    this._setState({dateTo: dayjs(dateTo).$d.toISOString()});
+    this.#dateFrom.set({'maxDate': dayjs(dateTo).$d.toISOString()});
   };
 
   #changeTransportTypeHandler = (evt) => {
@@ -285,7 +286,7 @@ export default class FormView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
-    this.updateElement({basePrice: evt.target.value});
+    this._setState({basePrice: +evt.target.value});
   };
 
   #selectOfferHandler = (evt) => {
