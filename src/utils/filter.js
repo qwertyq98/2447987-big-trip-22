@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {FilterType} from '../const.js';
 
 const checkIsPointBefore = (date) => dayjs(date).isBefore(dayjs(), 'D');
-const checkIsPointSame = (point) => (dayjs().isBetween(dayjs(point?.date_to), dayjs(point?.date_from)), 'D');
+const checkIsPointSame = (point) => dayjs().isBetween(dayjs(point?.dateTo), dayjs(point?.dateFrom), 'D');
 const checkIsPointAfter = (date) => dayjs(date).isAfter(dayjs(), 'D');
 
 const filtersGenerateInfo = {
