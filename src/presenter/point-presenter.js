@@ -36,6 +36,7 @@ export default class PointPresenter {
       boardOffers: this.#boardOffers,
       onEditClick: this.#editClickHandler,
       onFavoriteClick: this.#toggleFavoriteStateHandler,
+      mode: this.#modeType,
     });
 
     this.#pointEditComponent = new FormView({
@@ -45,6 +46,7 @@ export default class PointPresenter {
       onFormSubmit: this.#formSubmitHandler,
       onCloseForm: this.#buttonCloseHandler,
       onDeleteClick: this.#handleDeleteClick,
+      mode: this.#modeType,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {

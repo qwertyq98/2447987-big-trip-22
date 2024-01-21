@@ -1,10 +1,19 @@
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const CITIES = ['Hiroshima', 'Kopenhagen', 'Berlin', 'Nagasaki', 'Den Haag', 'Geneva', 'Munich', 'Moscow', 'Rotterdam', 'Monaco'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
-const POINT_COUNT = 3;
+const POINT_COUNT = 5;
 const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'hh:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY';
+const NEW_POINT = {
+  'basePrice': 0,
+  'dateFrom': '',
+  'dateTo': '',
+  'destination': '',
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight'
+};
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -60,4 +69,5 @@ export {
   SortType,
   UserAction,
   UpdateType,
+  NEW_POINT,
 };

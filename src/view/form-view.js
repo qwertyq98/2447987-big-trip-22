@@ -1,4 +1,4 @@
-import { CITIES, FULL_DATE_FORMAT, TIME_FORMAT, TYPES } from '../const.js';
+import { CITIES, FULL_DATE_FORMAT, ModeType, TIME_FORMAT, TYPES } from '../const.js';
 import { transformData, ucFirst } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
@@ -6,7 +6,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
-function createEditFormTemplate(point, destinations, offers) {
+function createEditFormTemplate(point, destinations = [], offers, mode) {
   const {
     basePrice,
     dateFrom,
@@ -109,7 +109,7 @@ function createEditFormTemplate(point, destinations, offers) {
   const renderEventFieldGroups = () => `
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label event__type-output" for="event-destination-${id}">
-        ${ucFirst(offerTypeName)}
+        ${offerTypeName ? ucFirst(offerTypeName) : ''}
       </label>
       <input
         class="event__input event__input--destination"
@@ -118,6 +118,7 @@ function createEditFormTemplate(point, destinations, offers) {
         name="event-destination"
         value="${pointDestination?.name || ''}"
         list="destination-list-${id}"
+        required
       >
       <datalist id="destination-list-${id}">
         ${renderCityOptionsList()}
@@ -132,7 +133,8 @@ function createEditFormTemplate(point, destinations, offers) {
         id="event-start-time-${id}"
         type="text"
         name="event-start-time"
-        value="${transformData(dateFrom, FULL_DATE_FORMAT)} ${transformData(dateFrom, TIME_FORMAT)}"
+        value="${transformData(dateFrom, FULL_DATE_FORMAT) }${transformData(dateFrom, TIME_FORMAT)}"
+        required
       >
       &mdash;
       <label class="visually-hidden" for="event-end-time-${id}">To</label>
@@ -142,7 +144,8 @@ function createEditFormTemplate(point, destinations, offers) {
         id="event-end-time-${id}"
         type="text"
         name="event-end-time"
-        value="${transformData(dateTo, FULL_DATE_FORMAT)} ${transformData(dateTo, TIME_FORMAT)}"
+        value="${transformData(dateTo, FULL_DATE_FORMAT)}${transformData(dateTo, TIME_FORMAT)}"
+        required
       >
     </div>
 
@@ -151,7 +154,7 @@ function createEditFormTemplate(point, destinations, offers) {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
+      <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" required>
     </div>`;
 
   return (
@@ -160,14 +163,15 @@ function createEditFormTemplate(point, destinations, offers) {
         ${renderTypeWrapper()}
         ${renderEventFieldGroups()}
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__reset-btn" type="reset">
+        ${mode === ModeType.CREATE_NEW ? 'Сancel' : 'Delete'}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
       <section class="event__details">
         ${renderOffersTypes(typeOffers)}
-        ${renderPointDestination(pointDestination)}
+        ${pointDestination ? renderPointDestination(pointDestination) : ''}
       </section>
     </form>`
   );
@@ -182,7 +186,8 @@ export default class FormView extends AbstractStatefulView {
   #dateFrom = null;
   #dateTo = null;
   #handleDeleteClick = null;
-  constructor({ point, boardDestinations, boardOffers, onFormSubmit, onCloseForm, onDeleteClick }) {
+  #modeType = null;
+  constructor({ point, boardDestinations, boardOffers, onFormSubmit, onCloseForm, onDeleteClick, mode }) {
     super();
     this.#point = point;
     this.#destinations = boardDestinations;
@@ -191,6 +196,7 @@ export default class FormView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClose = onCloseForm;
     this.#handleDeleteClick = onDeleteClick;
+    this.#modeType = mode;
     this._restoreHandlers();
   }
 
@@ -207,7 +213,7 @@ export default class FormView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditFormTemplate(this._state, this.#destinations, this.#offers);
+    return createEditFormTemplate(this._state, this.#destinations, this.#offers, this.#modeType);
   }
 
   reset() {

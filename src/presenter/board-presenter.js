@@ -3,9 +3,10 @@ import { remove, render } from '../framework/render.js';
 import { filterByFuture, filterByPast, filterByPresent, filtersGenerateInfo } from '../utils/filter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
-import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
+import {FilterType, NEW_POINT, RenderPosition, SortType, UpdateType, UserAction} from '../const.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort.js';
 import FilterPresenter from './filter-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -15,17 +16,30 @@ export default class BoardPresenter {
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #noPointComponent = null;
+  #newPointPresenter = null;
+  #onNewPointDestroy = null;
 
-  constructor({boardContainer, pointsModel, filterModel}) {
+  constructor({boardContainer, pointsModel, filterModel, onNewPointDestroy}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#onNewPointDestroy = onNewPointDestroy;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
     this.#renderBoard();
+
+    this.#newPointPresenter = new NewPointPresenter({
+      point: NEW_POINT,
+      boardContainer: this.#boardContainer,
+      onDataChange: this.#handleViewAction,
+      boardDestinations: this.#pointsModel.destinations,
+      boardOffers: this.#pointsModel.offers,
+      onModeChange: this.#handleModeChange,
+      onDestroy: this.#onNewPointDestroy,
+    });
     this.#renderFilters();
   }
 
@@ -42,6 +56,12 @@ export default class BoardPresenter {
       default:
         return [...points].sort(sortPointsByDay);
     }
+  }
+
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
   }
 
   #filterPoints(points) {
@@ -72,13 +92,14 @@ export default class BoardPresenter {
       return;
     }
 
-    this.#renderSort();
     for (let i = 0; i < points.length; i++) {
       this.#renderPoint(points[i], boardDestinations, boardOffers);
     }
+    this.#renderSort();
   }
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -126,11 +147,12 @@ export default class BoardPresenter {
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
-    render(this.#sortComponent, this.#boardContainer);
+    render(this.#sortComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
   #clearBoard({resetSortType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.clear();
     remove(this.#sortComponent);
     if (this.#noPointComponent) {
