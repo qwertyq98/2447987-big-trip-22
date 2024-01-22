@@ -56,7 +56,8 @@ export default class NewPointPresenter {
   #handleFormSubmit = (point) => {
     const form = this.#pointListContainer.querySelector('.event--edit');
     const input = form.querySelector('.event__input--destination');
-    if (checkFormValidity(input, form)) {
+    const { dateFrom, dateTo } = point;
+    if (checkFormValidity(input, form) && dateTo !== '' && dateFrom !== '') {
       this.#handleDataChange(
         UserAction.ADD_POINT,
         UpdateType.MINOR,

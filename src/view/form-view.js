@@ -133,7 +133,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         id="event-start-time-${id}"
         type="text"
         name="event-start-time"
-        value="${transformData(dateFrom, FULL_DATE_FORMAT) }${transformData(dateFrom, TIME_FORMAT)}"
+        value="${transformData(dateFrom, FULL_DATE_FORMAT)} ${transformData(dateFrom, TIME_FORMAT)}"
         required
       >
       &mdash;
@@ -144,7 +144,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         id="event-end-time-${id}"
         type="text"
         name="event-end-time"
-        value="${transformData(dateTo, FULL_DATE_FORMAT)}${transformData(dateTo, TIME_FORMAT)}"
+        value="${transformData(dateTo, FULL_DATE_FORMAT)} ${transformData(dateTo, TIME_FORMAT)}"
         required
       >
     </div>
@@ -154,7 +154,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" required>
+      <input class="event__input  event__input--price" id="event-price-${id}" type="number" min=1 name="event-price" value="${basePrice}" required>
     </div>`;
 
   return (

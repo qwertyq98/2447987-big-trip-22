@@ -11,7 +11,8 @@ function createPointTemplate(point, destinations, offers) {
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const durationOfStay = calculateDurationOfStay(point.dateTo, point.dateFrom);
-  const durationOfStayFormat = `${durationOfStay.days() > 0 ? `${durationOfStay.days()}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
+  const daysDutation = Math.trunc(durationOfStay.asDays());
+  const durationOfStayFormat = `${durationOfStay.days() > 0 ? `${daysDutation}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
   const renderPointsOffers = () => pointOffers.map(({price: destinationPrice, title}) => `
       <li class="event__offer">
         <span class="event__offer-title">${title}</span>
