@@ -7,6 +7,7 @@ import {FilterType, NEW_POINT, RenderPosition, SortType, UpdateType, UserAction}
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort.js';
 import FilterPresenter from './filter-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
+import LoadingView from '../view/loading-view.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -18,6 +19,8 @@ export default class BoardPresenter {
   #noPointComponent = null;
   #newPointPresenter = null;
   #onNewPointDestroy = null;
+  #loadingComponent = new LoadingView();
+  #isLoading = true;
 
   constructor({boardContainer, pointsModel, filterModel, onNewPointDestroy}) {
     this.#boardContainer = boardContainer;
@@ -87,6 +90,11 @@ export default class BoardPresenter {
     const boardOffers = this.#pointsModel.offers;
     const points = this.points;
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (filtersGenerateInfo[this.#filterModel.filter](points).length === 0) {
       this.#renderNoPoints();
       return;
@@ -132,6 +140,10 @@ export default class BoardPresenter {
     render(this.#noPointComponent, this.#boardContainer);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+  }
+
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
@@ -155,6 +167,7 @@ export default class BoardPresenter {
     this.#newPointPresenter.destroy();
     this.#pointPresenters.clear();
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
     }
@@ -190,6 +203,11 @@ export default class BoardPresenter {
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
         this.#currentSortType = SortType.DAY;
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }

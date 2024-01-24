@@ -1,7 +1,6 @@
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const CITIES = ['Hiroshima', 'Kopenhagen', 'Berlin', 'Nagasaki', 'Den Haag', 'Geneva', 'Munich', 'Moscow', 'Rotterdam', 'Monaco'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
-const POINT_COUNT = 5;
 const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'hh:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY';
@@ -14,6 +13,9 @@ const NEW_POINT = {
   'offers': [],
   'type': 'flight'
 };
+const AUTHORIZATION = 'Basic rdgjriogjrgjrgrugrgjrgn';
+const END_POINT = 'https://22.objects.pages.academy/big-trip';
+
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -51,12 +53,12 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 
 export {
   TYPES,
-  POINT_COUNT,
   DATE_FORMAT,
   FilterType,
   SORTS,
@@ -70,4 +72,6 @@ export {
   UserAction,
   UpdateType,
   NEW_POINT,
+  AUTHORIZATION,
+  END_POINT
 };
