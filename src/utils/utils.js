@@ -12,7 +12,23 @@ const getRandomArrayElement = (arr) => {
   return {...item, id: nanoid()};
 };
 const ucFirst = (str) => str[0]?.toUpperCase() + str?.slice(1);
-const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+const resetIfInvalid = (input) => {
+  if (input.value === '') {
+    return;
+  }
+  const options = input.list.options;
+  for (let i = 0; i < options.length; i++) {
+    if (input.value === options[i].value) {
+      return;
+    }
+  }
+  input.value = '';
+};
+const checkFormValidity = (input, form) => {
+  resetIfInvalid(input);
+  return form.checkValidity();
+};
 
 export {
   transformData,
@@ -22,5 +38,6 @@ export {
   calculateDurationOfStay,
   getRandomArrayElement,
   ucFirst,
-  updateItem,
+  isDatesEqual,
+  checkFormValidity,
 };

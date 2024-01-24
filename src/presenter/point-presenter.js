@@ -1,26 +1,28 @@
-import EditFormView from '../view/edit-form-view.js';
+import FormView from '../view/form-view.js';
 import PointView from '../view/point-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { ModeType } from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
+import { isDatesEqual } from '../utils/utils.js';
 
 export default class PointPresenter {
   #boardContainer = null;
   #pointComponent = null;
   #pointEditComponent = null;
-  #handleFavotiteChange = null;
   #boardOffers = null;
   #boardDestinations = null;
   #point = null;
   #handleModeChange = null;
   #modeType = ModeType.VIEWING;
+  #handleDataChange = null;
 
-  constructor(boardContainer, onFavoriteChange, point, boardDestinations, boardOffers, onModeChange) {
+  constructor(boardContainer, onDataChange, point, boardDestinations, boardOffers, onModeChange) {
     this.#boardContainer = boardContainer;
-    this.#handleFavotiteChange = onFavoriteChange;
     this.#point = point;
     this.#boardDestinations = boardDestinations;
     this.#boardOffers = boardOffers;
     this.#handleModeChange = onModeChange;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point) {
@@ -34,14 +36,17 @@ export default class PointPresenter {
       boardOffers: this.#boardOffers,
       onEditClick: this.#editClickHandler,
       onFavoriteClick: this.#toggleFavoriteStateHandler,
+      mode: this.#modeType,
     });
 
-    this.#pointEditComponent = new EditFormView({
+    this.#pointEditComponent = new FormView({
       point: {...this.#point},
       boardDestinations: this.#boardDestinations,
       boardOffers: this.#boardOffers,
       onFormSubmit: this.#formSubmitHandler,
       onCloseForm: this.#buttonCloseHandler,
+      onDeleteClick: this.#handleDeleteClick,
+      mode: this.#modeType,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -103,12 +108,30 @@ export default class PointPresenter {
     this.#replacePointToForm();
   };
 
-  #formSubmitHandler = (point) => {
-    this.#handleFavotiteChange(point);
+  #formSubmitHandler = (update) => {
+    const isMinorUpdate = (
+      !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+      !isDatesEqual(this.#point.dateTo, update.dateTo) ||
+      this.#point.basePrice !== update.basePrice
+    );
+
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
     this.#replaceFormToPoint();
   };
 
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  };
+
   #toggleFavoriteStateHandler = () => {
-    this.#handleFavotiteChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
   };
 }

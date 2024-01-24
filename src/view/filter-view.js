@@ -3,7 +3,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { ucFirst } from '../utils/utils.js';
 const filtersNames = Object.values(FilterType);
 
-function createFilterTemplate(filters) {
+function createFilterTemplate(filters, currentFilterType) {
   const renderBoardsFilters = () => filters.map(({type, count}, index) => `
   <div class="trip-filters__filter">
     <input
@@ -13,7 +13,7 @@ function createFilterTemplate(filters) {
       name="trip-filter"
       value="${type}"
       ${count === 0 ? 'disabled = ' : ''}
-      ${index === 0 ? 'checked' : ''}
+      ${currentFilterType === type ? 'checked' : ''}
       data-filter-type="${filtersNames[index]}"
     >
     <label
@@ -34,17 +34,18 @@ function createFilterTemplate(filters) {
 export default class FilterView extends AbstractView {
   #filters = {};
   #handleFilterTypeChange = null;
+  #currentFilter = null;
 
-  constructor({filters, onFilterTypeChange}) {
+  constructor({filters, onFilterTypeChange, currentFilterType}) {
     super();
     this.#filters = filters;
     this.#handleFilterTypeChange = onFilterTypeChange;
-
+    this.#currentFilter = currentFilterType;
     this.element.addEventListener('change', this.#filterTypeChangeHandler);
   }
 
   get template() {
-    return createFilterTemplate(this.#filters);
+    return createFilterTemplate(this.#filters, this.#currentFilter);
   }
 
   #filterTypeChangeHandler = (evt) => {

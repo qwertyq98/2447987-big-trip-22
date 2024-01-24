@@ -2,7 +2,7 @@ import { SORTS } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { ucFirst } from '../utils/utils.js';
 
-function createSortTemplate() {
+function createSortTemplate(currentSortType) {
   const renderBoardsSorts = () => SORTS.map((sort, index) => `
   <div class="trip-sort__item  trip-sort__item--${sort}">
     <input
@@ -12,7 +12,7 @@ function createSortTemplate() {
       name="trip-sort"
       value="sort-${sort}"
       ${sort === 'offers' || sort === 'event' ? 'disabled' : ''}
-      ${index === 0 ? 'checked' : ''}
+      ${currentSortType === sort ? 'checked' : ''}
       data-sort-type="${SORTS[index]}"
     >
     <label class="trip-sort__btn" for="sort-${sort}">${ucFirst(sort)}</label>
@@ -27,16 +27,17 @@ function createSortTemplate() {
 
 export default class SortView extends AbstractView {
   #handleSortTypeChange = null;
+  #currentSortType = null;
 
-  constructor({onSortTypeChange}) {
+  constructor({currentSortType, onSortTypeChange}) {
     super();
     this.#handleSortTypeChange = onSortTypeChange;
-
+    this.#currentSortType = currentSortType;
     this.element.addEventListener('change', this.#sortTypeChangeHandler);
   }
 
   get template() {
-    return createSortTemplate();
+    return createSortTemplate(this.#currentSortType);
   }
 
   #sortTypeChangeHandler = (evt) => {
