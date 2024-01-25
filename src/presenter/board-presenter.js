@@ -32,17 +32,15 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#renderBoard();
-
     this.#newPointPresenter = new NewPointPresenter({
       point: NEW_POINT,
       boardContainer: this.#boardContainer,
       onDataChange: this.#handleViewAction,
-      boardDestinations: this.#pointsModel.destinations,
-      boardOffers: this.#pointsModel.offers,
+      pointsModel: this.#pointsModel,
       onModeChange: this.#handleModeChange,
       onDestroy: this.#onNewPointDestroy,
     });
+    this.#renderBoard();
     this.#renderFilters();
   }
 

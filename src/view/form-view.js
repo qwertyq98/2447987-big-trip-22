@@ -17,8 +17,8 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
     id,
   } = point;
   const pointDestination = destinations.find((dest) => dest?.id === destination);
-  const typeOffers = offers.find((offer) => offer?.type === offerTypeName).offers;
-  const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer?.id));
+  const typeOffers = offers.find((offer) => offer?.type === offerTypeName)?.offers;
+  const pointOffers = typeOffers?.filter((typeOffer) => offersList.includes(typeOffer?.id));
 
   const renderRoutesTypes = () => TYPES.map((type) => `
   <div class="event__type-item">
@@ -38,7 +38,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
   </div>`).join('');
 
   const renderOffersTypes = (offersTypes) => {
-    if(offersTypes.length !== 0) {
+    if(offersTypes && offersTypes.length !== 0) {
       return `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
