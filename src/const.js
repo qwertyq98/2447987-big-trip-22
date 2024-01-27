@@ -1,5 +1,4 @@
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const CITIES = ['Hiroshima', 'Kopenhagen', 'Berlin', 'Nagasaki', 'Den Haag', 'Geneva', 'Munich', 'Moscow', 'Rotterdam', 'Monaco'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
 const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'hh:mm';
@@ -13,8 +12,8 @@ const NEW_POINT = {
   'offers': [],
   'type': 'flight'
 };
-const AUTHORIZATION = 'Basic rdgjriogjrgjrgrugrgjrgn';
-const END_POINT = 'https://22.objects.pages.academy/big-trip';
+const AUTHORIZATION = 'Basic rdgjriogjrgrugrgjrgn';
+const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
 
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
@@ -55,7 +54,10 @@ const UpdateType = {
   MAJOR: 'MAJOR',
   INIT: 'INIT',
 };
-
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export {
   TYPES,
@@ -64,7 +66,6 @@ export {
   SORTS,
   TIME_FORMAT,
   FULL_DATE_FORMAT,
-  CITIES,
   RenderPosition,
   EmptyFiltersList,
   ModeType,
@@ -73,5 +74,6 @@ export {
   UpdateType,
   NEW_POINT,
   AUTHORIZATION,
-  END_POINT
+  END_POINT,
+  TimeLimit
 };

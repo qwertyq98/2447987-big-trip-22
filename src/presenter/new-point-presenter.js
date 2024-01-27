@@ -50,6 +50,26 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  }
+
+
   #handleFormSubmit = (point) => {
     const form = this.#pointListContainer.querySelector('.event--edit');
     const input = form.querySelector('.event__input--destination');
@@ -60,7 +80,8 @@ export default class NewPointPresenter {
         UpdateType.MINOR,
         point,
       );
-      this.destroy();
+    } else {
+      this.#pointEditComponent.shake();
     }
   };
 

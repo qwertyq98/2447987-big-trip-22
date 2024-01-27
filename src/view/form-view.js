@@ -1,4 +1,4 @@
-import { CITIES, FULL_DATE_FORMAT, ModeType, TIME_FORMAT, TYPES } from '../const.js';
+import { FULL_DATE_FORMAT, ModeType, TIME_FORMAT, TYPES } from '../const.js';
 import { transformData, ucFirst } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
@@ -15,6 +15,9 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
     type: offerTypeName,
     offers: offersList,
     id,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = point;
   const pointDestination = destinations.find((dest) => dest?.id === destination);
   const typeOffers = offers.find((offer) => offer?.type === offerTypeName)?.offers;
@@ -53,6 +56,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
                   name="event-offer-${offerType.title}"
                   ${pointOffers.includes(offerType) ? 'checked' : ''}
                   data-offer-id="${offerType.id}"
+                  ${isDisabled ? 'disabled' : ''}
                 >
                 <label class="event__offer-label" for="event-offer-${offerType.id}">
                   <span class="event__offer-title">${offerType.title}</span>
@@ -89,7 +93,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
     }
   };
 
-  const renderCityOptionsList = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
+  const renderCityOptionsList = () => destinations.map((currentDestination) => `<option value="${currentDestination.name}"></option>`).join('');
 
   const renderTypeWrapper = () => `
   <div class="event__type-wrapper">
@@ -97,9 +101,9 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
       <span class="visually-hidden">Choose event type</span>
       <img class="event__type-icon" width="17" height="17" src="img/icons/${offerTypeName}.png" alt="Event type icon">
     </label>
-    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
     <div class="event__type-list">
-      <fieldset class="event__type-group">
+      <fieldset class="event__type-group" ${isDisabled ? 'disabled' : ''}>
         <legend class="visually-hidden">Event type</legend>
         ${renderRoutesTypes()}
       </fieldset>
@@ -118,6 +122,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         name="event-destination"
         value="${pointDestination?.name || ''}"
         list="destination-list-${id}"
+        ${isDisabled ? 'disabled' : ''}
         required
       >
       <datalist id="destination-list-${id}">
@@ -134,6 +139,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         type="text"
         name="event-start-time"
         value="${transformData(dateFrom, FULL_DATE_FORMAT)} ${transformData(dateFrom, TIME_FORMAT)}"
+        ${isDisabled ? 'disabled' : ''}
         required
       >
       &mdash;
@@ -145,6 +151,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         type="text"
         name="event-end-time"
         value="${transformData(dateTo, FULL_DATE_FORMAT)} ${transformData(dateTo, TIME_FORMAT)}"
+        ${isDisabled ? 'disabled' : ''}
         required
       >
     </div>
@@ -154,7 +161,18 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-${id}" type="number" min=1 name="event-price" value="${basePrice}" required>
+      <input
+        class="event__input
+        event__input--price"
+        id="event-price-${id}"
+        type="number"
+        min=1
+        pattern="^[ 0-9]+$"
+        name="event-price"
+        value="${basePrice}"
+        ${isDisabled ? 'disabled' : ''}
+        required
+        >
     </div>`;
 
   return (
@@ -162,10 +180,10 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
       <header class="event__header">
         ${renderTypeWrapper()}
         ${renderEventFieldGroups()}
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">
-        ${mode === ModeType.CREATE_NEW ? 'Сancel' : 'Delete'}</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+        ${mode === ModeType.CREATE_NEW ? 'Сancel' : `${isDeleting ? 'Deleting...' : 'Delete'}`}</button>
+        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
@@ -314,7 +332,22 @@ export default class FormView extends AbstractStatefulView {
     }
   };
 
-  static parseStateToPoint(point) {
-    return {...point};
+  static parsePointToState(point) {
+    return {
+      ...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = {...state};
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   }
 }
