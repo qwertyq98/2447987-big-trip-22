@@ -25,9 +25,8 @@ const newPointButtonComponent = new NewPointButtonView({
 });
 
 boardPresenter.init();
-pointsModel.init().finally(() => {
-  render(newPointButtonComponent, buttonContainer);
-});
+pointsModel.init();
+render(newPointButtonComponent, buttonContainer);
 
 function handleNewPointFormClose() {
   newPointButtonComponent.element.disabled = false;

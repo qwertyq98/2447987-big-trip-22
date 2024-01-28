@@ -13,7 +13,7 @@ const NEW_POINT = {
   'type': 'flight'
 };
 const AUTHORIZATION = 'Basic rdgjriogjrgrugrgjrgn';
-const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
@@ -53,6 +53,7 @@ const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  ERROR: 'ERROR',
 };
 const TimeLimit = {
   LOWER_LIMIT: 350,

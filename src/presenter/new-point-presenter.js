@@ -1,7 +1,7 @@
 import {remove, render} from '../framework/render.js';
 import {UserAction, UpdateType, ModeType, NEW_POINT, RenderPosition} from '../const.js';
 import FormView from '../view/form-view.js';
-import { checkFormValidity } from '../utils/utils.js';
+
 
 export default class NewPointPresenter {
   #pointListContainer = null;
@@ -32,7 +32,7 @@ export default class NewPointPresenter {
       mode: ModeType.CREATE_NEW
     });
 
-    render(this.#pointEditComponent, this.#pointListContainer.querySelector('.trip-events__trip-sort'), RenderPosition.AFTEREND);
+    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
@@ -72,9 +72,8 @@ export default class NewPointPresenter {
 
   #handleFormSubmit = (point) => {
     const form = this.#pointListContainer.querySelector('.event--edit');
-    const input = form.querySelector('.event__input--destination');
     const { dateFrom, dateTo } = point;
-    if (checkFormValidity(input, form) && dateTo !== '' && dateFrom !== '') {
+    if (form.checkValidity() && dateTo !== '' && dateFrom !== '') {
       this.#handleDataChange(
         UserAction.ADD_POINT,
         UpdateType.MINOR,

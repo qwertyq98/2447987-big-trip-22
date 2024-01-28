@@ -22,6 +22,13 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
   const pointDestination = destinations.find((dest) => dest?.id === destination);
   const typeOffers = offers.find((offer) => offer?.type === offerTypeName)?.offers;
   const pointOffers = typeOffers?.filter((typeOffer) => offersList.includes(typeOffer?.id));
+  const humanizesDuration = (date) => {
+    if (date) {
+      return `${transformData(date, FULL_DATE_FORMAT)} ${transformData(date, TIME_FORMAT)}`;
+    } else {
+      return '';
+    }
+  };
 
   const renderRoutesTypes = () => TYPES.map((type) => `
   <div class="event__type-item">
@@ -138,7 +145,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         id="event-start-time-${id}"
         type="text"
         name="event-start-time"
-        value="${transformData(dateFrom, FULL_DATE_FORMAT)} ${transformData(dateFrom, TIME_FORMAT)}"
+        value="${humanizesDuration(dateFrom)}"
         ${isDisabled ? 'disabled' : ''}
         required
       >
@@ -150,7 +157,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         id="event-end-time-${id}"
         type="text"
         name="event-end-time"
-        value="${transformData(dateTo, FULL_DATE_FORMAT)} ${transformData(dateTo, TIME_FORMAT)}"
+        value="${humanizesDuration(dateTo)}"
         ${isDisabled ? 'disabled' : ''}
         required
       >
@@ -176,22 +183,24 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
     </div>`;
 
   return (
-    `<form class="event event--edit" action="#" method="post">
-      <header class="event__header">
-        ${renderTypeWrapper()}
-        ${renderEventFieldGroups()}
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
-        ${mode === ModeType.CREATE_NEW ? 'Сancel' : `${isDeleting ? 'Deleting...' : 'Delete'}`}</button>
-        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </header>
-      <section class="event__details">
-        ${renderOffersTypes(typeOffers)}
-        ${pointDestination ? renderPointDestination(pointDestination) : ''}
-      </section>
-    </form>`
+    `<li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
+          ${renderTypeWrapper()}
+          ${renderEventFieldGroups()}
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+          ${mode === ModeType.CREATE_NEW ? 'Cancel' : `${isDeleting ? 'Deleting...' : 'Delete'}`}</button>
+          <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
+            <span class="visually-hidden">Open event</span>
+          </button>
+        </header>
+        <section class="event__details">
+          ${renderOffersTypes(typeOffers)}
+          ${pointDestination ? renderPointDestination(pointDestination) : ''}
+        </section>
+      </form>
+    </li>`
   );
 }
 
@@ -264,7 +273,11 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit({...this._state});
+    // this.#handleFormSubmit({...this._state});
+    const { destination, dateFrom, dateTo } = this._state;
+    if (destination && dateFrom && dateTo) {
+      this.#handleFormSubmit(FormView.parseStateToPoint(this._state));
+    }
   };
 
   #setDatepicker() {
@@ -329,6 +342,9 @@ export default class FormView extends AbstractStatefulView {
       if (newDestination) {
         this.updateElement({destination: newDestination.id});
       }
+      // else {
+      //   this.updateElement({destination: null});
+      // }
     }
   };
 
@@ -342,12 +358,12 @@ export default class FormView extends AbstractStatefulView {
   }
 
   static parseStateToPoint(state) {
-    const point = {...state};
+    const states = {...state};
 
-    delete point.isDisabled;
-    delete point.isSaving;
-    delete point.isDeleting;
+    delete states.isDisabled;
+    delete states.isSaving;
+    delete states.isDeleting;
 
-    return point;
+    return states;
   }
 }

@@ -4,24 +4,30 @@ import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { filterByFuture, filterByPast, filterByPresent, filtersGenerateInfo } from '../utils/filter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
-import {FilterType, NEW_POINT, RenderPosition, SortType, TimeLimit, UpdateType, UserAction} from '../const.js';
+import {FilterType, RenderPosition, SortType, TimeLimit, UpdateType, UserAction} from '../const.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort.js';
 import FilterPresenter from './filter-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading-view.js';
+import HeaderInfo from '../view/header-info.js';
+import TripList from '../view/trip-list.js';
+import ErrroPointView from '../view/error-point-view.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
   #pointsModel = null;
   #filterModel = null;
+  #tripList = new TripList();
   #sortComponent = null;
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #noPointComponent = null;
   #newPointPresenter = null;
   #onNewPointDestroy = null;
+  #headerInfo = new HeaderInfo();
   #loadingComponent = new LoadingView();
   #isLoading = true;
+  #errorMessageComponent = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -37,16 +43,17 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#newPointPresenter = new NewPointPresenter({
-      point: NEW_POINT,
-      boardContainer: this.#boardContainer,
-      onDataChange: this.#handleViewAction,
-      pointsModel: this.#pointsModel,
-      onModeChange: this.#handleModeChange,
-      onDestroy: this.#onNewPointDestroy,
-    });
+    this.#renderHeaderInfo();
     this.#renderBoard();
     this.#renderFilters();
+    remove(this.#errorMessageComponent);
+
+    this.#newPointPresenter = new NewPointPresenter({
+      boardContainer: this.#tripList.element,
+      onDataChange: this.#handleViewAction,
+      pointsModel: this.#pointsModel,
+      onDestroy: this.#onNewPointDestroy,
+    });
   }
 
   get points() {
@@ -92,6 +99,7 @@ export default class BoardPresenter {
     const boardDestinations = this.#pointsModel.destinations;
     const boardOffers = this.#pointsModel.offers;
     const points = this.points;
+    render(this.#tripList, this.#boardContainer);
 
     if (this.#isLoading) {
       this.#renderLoading();
@@ -125,9 +133,13 @@ export default class BoardPresenter {
     filterPresenter.init();
   }
 
+  #renderHeaderInfo() {
+    render(this.#headerInfo, document.querySelector('.trip-main__trip-controls'), RenderPosition.BEFOREBEGIN);
+  }
+
   #renderPoint(point, boardDestinations, boardOffers) {
     const pointPresenter = new PointPresenter(
-      this.#boardContainer,
+      this.#tripList.element,
       this.#handleViewAction,
       point,
       boardDestinations,
@@ -141,6 +153,11 @@ export default class BoardPresenter {
   #renderNoPoints() {
     this.#noPointComponent = new NoPointView(this.#filterModel.filter);
     render(this.#noPointComponent, this.#boardContainer);
+  }
+
+  #renderErrorMessage() {
+    this.#errorMessageComponent = new ErrroPointView();
+    render(this.#errorMessageComponent, this.#boardContainer);
   }
 
   #renderLoading() {
@@ -229,6 +246,12 @@ export default class BoardPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
+        break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#clearBoard();
+        this.#renderErrorMessage();
         break;
     }
   };
