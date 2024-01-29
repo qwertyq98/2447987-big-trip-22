@@ -71,17 +71,11 @@ export default class NewPointPresenter {
 
 
   #handleFormSubmit = (point) => {
-    const form = this.#pointListContainer.querySelector('.event--edit');
-    const { dateFrom, dateTo } = point;
-    if (form.checkValidity() && dateTo !== '' && dateFrom !== '') {
-      this.#handleDataChange(
-        UserAction.ADD_POINT,
-        UpdateType.MINOR,
-        point,
-      );
-    } else {
-      this.#pointEditComponent.shake();
-    }
+    this.#handleDataChange(
+      UserAction.ADD_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   #handleDeleteClick = () => {

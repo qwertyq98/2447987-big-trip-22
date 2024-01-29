@@ -82,9 +82,11 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
     const description = pointDest.description;
     const pictures = pointDest.pictures;
 
-    if (description !== '' && pictures.length !== 0) {
+    if (description === '' && pictures.length === 0) {
+      return '';
+    } else {
       return `
-      <section class="event__section  event__section--destination">
+      <section cl ass="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${description}</p>
         ${pictures.length !== 0 ? `
@@ -95,8 +97,6 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
           </div>
         ` : ''}
       </section>`;
-    } else {
-      return '';
     }
   };
 
@@ -188,10 +188,10 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         <header class="event__header">
           ${renderTypeWrapper()}
           ${renderEventFieldGroups()}
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset">
           ${mode === ModeType.CREATE_NEW ? 'Cancel' : `${isDeleting ? 'Deleting...' : 'Delete'}`}</button>
-          <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
+          <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
@@ -273,10 +273,13 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    // this.#handleFormSubmit({...this._state});
-    const { destination, dateFrom, dateTo } = this._state;
-    if (destination && dateFrom && dateTo) {
+
+    const form = this.element.querySelector('.event--edit');
+    const { dateFrom, dateTo, destination } = this._state;
+    if (form?.checkValidity() && dateTo !== '' && dateFrom !== '' && destination) {
       this.#handleFormSubmit(FormView.parseStateToPoint(this._state));
+    } else {
+      this.shake();
     }
   };
 
@@ -342,9 +345,6 @@ export default class FormView extends AbstractStatefulView {
       if (newDestination) {
         this.updateElement({destination: newDestination.id});
       }
-      // else {
-      //   this.updateElement({destination: null});
-      // }
     }
   };
 

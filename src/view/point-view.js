@@ -12,7 +12,15 @@ function createPointTemplate(point, destinations, offers) {
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const durationOfStay = calculateDurationOfStay(point.dateTo, point.dateFrom);
   const daysDutation = Math.trunc(durationOfStay.asDays());
-  const durationOfStayFormat = `${durationOfStay.days() > 0 ? `${daysDutation}D` : ''} ${durationOfStay.hours()}H ${durationOfStay.minutes()}M`;
+  const formatDuration = (durationElement) => {
+    if (durationElement < 10) {
+      return `0${durationElement}`;
+    } else {
+      return durationElement;
+    }
+  };
+  const durationOfStayFormat = `${durationOfStay.days() > 0 ?
+    `${formatDuration(daysDutation)}D` : ''} ${formatDuration(durationOfStay.hours())}H ${formatDuration(durationOfStay.minutes())}M`;
   const renderPointsOffers = () => pointOffers.map(({price: destinationPrice, title}) => `
       <li class="event__offer">
         <span class="event__offer-title">${title}</span>
@@ -45,13 +53,13 @@ function createPointTemplate(point, destinations, offers) {
           <ul class="event__selected-offers">
             ${renderPointsOffers()}
           </ul>
-          <button class="event__favorite-btn  ${point.isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
+          <button class="event__favorite-btn ${point.isDisabled ? 'disabled' : ''} ${point.isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
             <span class="visually-hidden">Add to favorite</span>
             <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
               <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
             </svg>
           </button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__rollup-btn" ${point.isDisabled ? 'disabled' : ''} type="button">
             <span class="visually-hidden">Open event</span>
           </button>
         </div>

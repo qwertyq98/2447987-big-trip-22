@@ -1,7 +1,7 @@
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
 const DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'hh:mm';
+const TIME_FORMAT = 'HH:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY';
 const NEW_POINT = {
   'basePrice': 0,
@@ -12,7 +12,7 @@ const NEW_POINT = {
   'offers': [],
   'type': 'flight'
 };
-const AUTHORIZATION = 'Basic rdgjriogjrgrugrgjrgn';
+const AUTHORIZATION = 'Basic rdgjriogjrgrugrgjgsregrgn';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const RenderPosition = {

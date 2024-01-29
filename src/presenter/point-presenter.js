@@ -99,7 +99,7 @@ export default class PointPresenter {
 
   setAborting() {
     if (this.#modeType === ModeType.VIEWING) {
-      this.#pointComponent.shake();
+      this.#pointComponent?.shake();
       return;
     }
 
@@ -111,7 +111,7 @@ export default class PointPresenter {
       });
     };
 
-    this.#pointEditComponent.shake(resetFormState);
+    this.#pointEditComponent?.shake(resetFormState);
   }
 
   #buttonCloseHandler = () => {
