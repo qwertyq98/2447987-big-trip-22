@@ -19,9 +19,9 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
     isSaving,
     isDeleting,
   } = point;
-  const pointDestination = destinations.find((dest) => dest?.id === destination);
-  const typeOffers = offers.find((offer) => offer?.type === offerTypeName)?.offers;
-  const pointOffers = typeOffers?.filter((typeOffer) => offersList.includes(typeOffer?.id));
+  const pointDestination = destinations.find((dest) => dest.id === destination);
+  const typeOffers = offers.find((offer) => offer.type === offerTypeName)?.offers;
+  const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer.id));
   const humanizesDuration = (date) => {
     if (date) {
       return `${transformData(date, FULL_DATE_FORMAT)} ${transformData(date, TIME_FORMAT)}`;
@@ -276,7 +276,7 @@ export default class FormView extends AbstractStatefulView {
 
     const form = this.element.querySelector('.event--edit');
     const { dateFrom, dateTo, destination } = this._state;
-    if (form?.checkValidity() && dateTo !== '' && dateFrom !== '' && destination) {
+    if (form.checkValidity() && dateTo !== '' && dateFrom !== '' && destination) {
       this.#handleFormSubmit(FormView.parseStateToPoint(this._state));
     } else {
       this.shake();

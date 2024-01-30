@@ -1,26 +1,20 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import AbstractView from '../framework/view/abstract-view.js';
-import { calculateDurationOfStay, transformToDateFromFormat, transformToTimeToFormat } from '../utils/utils.js';
+import { calculateDurationOfStay, formatDuratioToTwoCharacters, transformToDateFromFormat, transformToTimeToFormat } from '../utils/utils.js';
 
 dayjs.extend(duration);
 
 function createPointTemplate(point, destinations, offers) {
 
-  const pointDestination = destinations?.find((dest) => dest.id === point.destination);
+  const pointDestination = destinations.find((dest) => dest.id === point.destination);
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const durationOfStay = calculateDurationOfStay(point.dateTo, point.dateFrom);
   const daysDutation = Math.trunc(durationOfStay.asDays());
-  const formatDuration = (durationElement) => {
-    if (durationElement < 10) {
-      return `0${durationElement}`;
-    } else {
-      return durationElement;
-    }
-  };
+
   const durationOfStayFormat = `${durationOfStay.days() > 0 ?
-    `${formatDuration(daysDutation)}D` : ''} ${formatDuration(durationOfStay.hours())}H ${formatDuration(durationOfStay.minutes())}M`;
+    `${formatDuratioToTwoCharacters(daysDutation)}D` : ''} ${formatDuratioToTwoCharacters(durationOfStay.hours())}H ${formatDuratioToTwoCharacters(durationOfStay.minutes())}M`;
   const renderPointsOffers = () => pointOffers.map(({price: destinationPrice, title}) => `
       <li class="event__offer">
         <span class="event__offer-title">${title}</span>
@@ -37,7 +31,7 @@ function createPointTemplate(point, destinations, offers) {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${point.type} ${pointDestination?.name}</h3>
+          <h3 class="event__title">${point.type} ${pointDestination.name}</h3>
           <div class="event__schedule">
             <p class="event__time">
               <time class="event__start-time" datetime=${point.dateFrom}>${transformToTimeToFormat(point.dateFrom)}</time>

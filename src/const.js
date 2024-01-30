@@ -14,7 +14,7 @@ const NEW_POINT = {
 };
 const AUTHORIZATION = 'Basic rdgjriogjrgrugrgjgsregrgn';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
-
+const VALID_DATA_LENGTH = 2;
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -76,5 +76,6 @@ export {
   NEW_POINT,
   AUTHORIZATION,
   END_POINT,
-  TimeLimit
+  TimeLimit,
+  VALID_DATA_LENGTH
 };
