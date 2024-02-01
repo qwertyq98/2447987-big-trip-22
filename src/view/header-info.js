@@ -1,32 +1,36 @@
 import AbstractView from '../framework/view/abstract-view.js';
-function createHeaderInfo() {
+function createHeaderInfo(dateFrom, dateTo, destinations, totalCost) {
   return `
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
+        <h1 class="trip-info__title">${destinations}</h1>
 
-        <p class="trip-info__dates">18&nbsp;&mdash;&nbsp;20 Mar</p>
+        <p class="trip-info__dates">${dateFrom} - ${dateTo}</p>
       </div>
 
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalCost}</span>
       </p>
     </section>
   `;
 }
 
 export default class HeaderInfo extends AbstractView {
-  #points = null;
+  #dateFrom = null;
   #destinations = null;
+  #dateTo = null;
+  #totalCost = null;
 
-  constructor(destinations, points) {
+  constructor(dateFrom, dateTo, destinations, totalCost) {
     super();
+    this.#dateFrom = dateFrom;
     this.#destinations = destinations;
-    this.#points = points;
+    this.#dateTo = dateTo;
+    this.#totalCost = totalCost;
   }
 
   get template() {
-    return createHeaderInfo();
+    return createHeaderInfo(this.#dateFrom, this.#destinations, this.#dateTo, this.#totalCost);
   }
 }
 

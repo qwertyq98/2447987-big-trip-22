@@ -9,9 +9,9 @@ import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/s
 import FilterPresenter from './filter-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading-view.js';
-import HeaderInfo from '../view/header-info.js';
+import PointInfoPresenter from './point-info-presenter.js';
 import TripList from '../view/trip-list.js';
-import ErrroPointView from '../view/error-point-view.js';
+import ErrorPointView from '../view/error-point-view.js';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -24,7 +24,6 @@ export default class BoardPresenter {
   #noPointComponent = null;
   #newPointPresenter = null;
   #onNewPointDestroy = null;
-  #headerInfo = new HeaderInfo();
   #loadingComponent = new LoadingView();
   #isLoading = true;
   #errorMessageComponent = null;
@@ -43,9 +42,9 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#renderHeaderInfo();
     this.#renderBoard();
     this.#renderFilters();
+    this.#renderHeaderInfo();
     remove(this.#errorMessageComponent);
 
     this.#newPointPresenter = new NewPointPresenter({
@@ -145,7 +144,13 @@ export default class BoardPresenter {
   }
 
   #renderHeaderInfo() {
-    render(this.#headerInfo, document.querySelector('.trip-main__trip-controls'), RenderPosition.BEFOREBEGIN);
+    const controlsTripElement = document.querySelector('.trip-main__trip-controls');
+    const pointInfoPresenter = new PointInfoPresenter({
+      infoContainer: controlsTripElement,
+      pointsModel: this.#pointsModel,
+    });
+
+    pointInfoPresenter.init();
   }
 
   #renderPoint(point, boardDestinations, boardOffers) {
@@ -167,7 +172,7 @@ export default class BoardPresenter {
   }
 
   #renderErrorMessage() {
-    this.#errorMessageComponent = new ErrroPointView();
+    this.#errorMessageComponent = new ErrorPointView();
     render(this.#errorMessageComponent, this.#boardContainer);
   }
 
