@@ -1,23 +1,20 @@
 import {remove, render} from '../framework/render.js';
-import {nanoid} from 'nanoid';
 import {UserAction, UpdateType, ModeType, NEW_POINT, RenderPosition} from '../const.js';
 import FormView from '../view/form-view.js';
-import { checkFormValidity } from '../utils/utils.js';
+
 
 export default class NewPointPresenter {
   #pointListContainer = null;
   #handleDataChange = null;
   #handleDestroy = null;
   #pointEditComponent = null;
-  #boardDestinations = null;
-  #boardOffers = null;
+  #pointsModel = null;
 
-  constructor({boardContainer, onDataChange, onDestroy, boardDestinations, boardOffers}) {
+  constructor({boardContainer, onDataChange, onDestroy, pointsModel}) {
     this.#pointListContainer = boardContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
-    this.#boardDestinations = boardDestinations;
-    this.#boardOffers = boardOffers;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
@@ -27,15 +24,15 @@ export default class NewPointPresenter {
 
     this.#pointEditComponent = new FormView({
       point: NEW_POINT,
-      boardDestinations: this.#boardDestinations,
-      boardOffers: this.#boardOffers,
+      boardDestinations: this.#pointsModel.destinations,
+      boardOffers: this.#pointsModel.offers,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
       onCloseForm: this.#handleDeleteClick,
       mode: ModeType.CREATE_NEW
     });
 
-    render(this.#pointEditComponent, this.#pointListContainer.querySelector('.trip-events__trip-sort'), RenderPosition.AFTEREND);
+    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
@@ -53,18 +50,32 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#pointEditComponent?.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointEditComponent?.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent?.shake(resetFormState);
+  }
+
+
   #handleFormSubmit = (point) => {
-    const form = this.#pointListContainer.querySelector('.event--edit');
-    const input = form.querySelector('.event__input--destination');
-    const { dateFrom, dateTo } = point;
-    if (checkFormValidity(input, form) && dateTo !== '' && dateFrom !== '') {
-      this.#handleDataChange(
-        UserAction.ADD_POINT,
-        UpdateType.MINOR,
-        {id: nanoid(), ...point},
-      );
-      this.destroy();
-    }
+    this.#handleDataChange(
+      UserAction.ADD_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   #handleDeleteClick = () => {

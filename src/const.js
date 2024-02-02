@@ -1,9 +1,8 @@
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const CITIES = ['Hiroshima', 'Kopenhagen', 'Berlin', 'Nagasaki', 'Den Haag', 'Geneva', 'Munich', 'Moscow', 'Rotterdam', 'Monaco'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
-const POINT_COUNT = 5;
 const DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'hh:mm';
+const DATE_FORMAT_REVERSE = 'D MMM';
+const TIME_FORMAT = 'HH:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY';
 const NEW_POINT = {
   'basePrice': 0,
@@ -14,6 +13,9 @@ const NEW_POINT = {
   'offers': [],
   'type': 'flight'
 };
+const AUTHORIZATION = 'Basic rdgjriogjrgrugrgjgsregrgn';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+const VALID_DATA_LENGTH = 2;
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -51,18 +53,21 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  ERROR: 'ERROR',
 };
-
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export {
   TYPES,
-  POINT_COUNT,
   DATE_FORMAT,
   FilterType,
   SORTS,
   TIME_FORMAT,
   FULL_DATE_FORMAT,
-  CITIES,
   RenderPosition,
   EmptyFiltersList,
   ModeType,
@@ -70,4 +75,9 @@ export {
   UserAction,
   UpdateType,
   NEW_POINT,
+  AUTHORIZATION,
+  END_POINT,
+  TimeLimit,
+  VALID_DATA_LENGTH,
+  DATE_FORMAT_REVERSE,
 };
