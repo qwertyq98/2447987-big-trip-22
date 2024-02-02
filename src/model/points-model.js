@@ -1,5 +1,6 @@
 import { UpdateType } from '../const.js';
 import Observable from '../framework/observable.js';
+import { sortPointsByDay } from '../utils/sort.js';
 
 export default class PointsModel extends Observable {
   #points = [];
@@ -97,7 +98,7 @@ export default class PointsModel extends Observable {
   }
 
   get points() {
-    return this.#points;
+    return this.#points.sort(sortPointsByDay);
   }
 
   get destinations() {

@@ -19,7 +19,7 @@ export default class PointInfoPresenter {
   }
 
   get dateTo() {
-    return this.#pointsModel.points[0]?.dateTo;
+    return this.#pointsModel.points[this.#pointsModel.points.length - 1]?.dateTo;
   }
 
   init() {
@@ -30,9 +30,9 @@ export default class PointInfoPresenter {
       const dateFrom = this.dateFrom;
       const dateTo = this.dateTo;
       const previousHeaderInfoComponent = this.#pointInfoComponent;
-      const totalCost = 11;
+      const totalCost = this.#caclculateTotalPrice(points);
 
-      const newTripInfoComponent = new HeaderInfo(dateFrom, dateTo, this.#destinations, totalCost);
+      const newTripInfoComponent = new HeaderInfo(dateFrom, dateTo, this.destinationNames, totalCost);
       if (previousHeaderInfoComponent === null) {
         render(newTripInfoComponent, this.#pointInfoContainer, RenderPosition.BEFOREBEGIN);
       } else {
@@ -44,6 +44,34 @@ export default class PointInfoPresenter {
       remove(this.#pointInfoComponent);
       this.#pointInfoComponent = null;
     }
+  }
+
+  get destinationNames() {
+    const points = this.#pointsModel.points;
+    const destinationNames = points.map((point) => this.#getDestinationsById(point.destination).name);
+
+    return destinationNames;
+  }
+
+  #getDestinationsById(id) {
+    return this.#destinations.find((item) => item.id === id);
+  }
+
+  #caclculateTotalPrice(points) {
+    return points.reduce((sum, point) => {
+      sum += point.basePrice + this.#sumOffersPrice(point.offers, point.type);
+      return sum;
+    }, 0);
+  }
+
+  #sumOffersPrice(selectedOffers, type) {
+    const offers = this.#pointsModel.offers.find((item) => item.type === type).offers;
+    return offers.reduce((sum, item) => {
+      if (selectedOffers.includes(item.id)) {
+        sum += item.price;
+      }
+      return sum;
+    }, 0);
   }
 
   #handleModelChange = (updateType) => {

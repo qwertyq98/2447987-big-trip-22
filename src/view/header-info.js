@@ -1,11 +1,27 @@
 import AbstractView from '../framework/view/abstract-view.js';
-function createHeaderInfo(dateFrom, dateTo, destinations, totalCost) {
+import { transformToTimeToFormatReverse } from '../utils/utils.js';
+
+function createHeaderInfo(dateFrom, destinations, dateTo, totalCost) {
+  const dateFormater = (from, to) => {
+    const dateStart = transformToTimeToFormatReverse(from);
+    const dateEnd = transformToTimeToFormatReverse(to);
+    return `${dateStart} - ${dateEnd}`;
+  };
+
+  const routeformat = (cities) => {
+    if (cities.length > 3) {
+      return `${cities[0]} — ... — ${cities[cities.length - 1]}`;
+    } else {
+      return `${cities[0]} — ${cities[1]} — ${cities[2]}`;
+    }
+  };
+
   return `
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">${destinations}</h1>
+        <h1 class="trip-info__title">${routeformat(destinations)}</h1>
 
-        <p class="trip-info__dates">${dateFrom} - ${dateTo}</p>
+        <p class="trip-info__dates">${dateFormater(dateFrom, dateTo)}</p>
       </div>
 
       <p class="trip-info__cost">
