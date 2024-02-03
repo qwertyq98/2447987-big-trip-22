@@ -12,17 +12,17 @@ export default class PointPresenter {
   #boardOffers = null;
   #boardDestinations = null;
   #point = null;
-  #handleModeChange = null;
+  #modeChangeHandler = null;
   #modeType = ModeType.VIEWING;
-  #handleDataChange = null;
+  #dataChangeHandler = null;
 
   constructor(boardContainer, onDataChange, point, boardDestinations, boardOffers, onModeChange) {
     this.#boardContainer = boardContainer;
     this.#point = point;
     this.#boardDestinations = boardDestinations;
     this.#boardOffers = boardOffers;
-    this.#handleModeChange = onModeChange;
-    this.#handleDataChange = onDataChange;
+    this.#modeChangeHandler = onModeChange;
+    this.#dataChangeHandler = onDataChange;
   }
 
   init(point) {
@@ -45,7 +45,7 @@ export default class PointPresenter {
       boardOffers: this.#boardOffers,
       onFormSubmit: this.#formSubmitHandler,
       onCloseForm: this.#buttonCloseHandler,
-      onDeleteClick: this.#handleDeleteClick,
+      onDeleteClick: this.#deleteClickHandler,
       mode: this.#modeType,
     });
 
@@ -130,7 +130,7 @@ export default class PointPresenter {
   #replacePointToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#handleModeChange();
+    this.#modeChangeHandler();
     this.#modeType = ModeType.EDITING;
   }
 
@@ -151,15 +151,15 @@ export default class PointPresenter {
       this.#point.basePrice !== update.basePrice
     );
 
-    this.#handleDataChange(
+    this.#dataChangeHandler(
       UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
   };
 
-  #handleDeleteClick = (point) => {
-    this.#handleDataChange(
+  #deleteClickHandler = (point) => {
+    this.#dataChangeHandler(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
@@ -167,6 +167,9 @@ export default class PointPresenter {
   };
 
   #toggleFavoriteStateHandler = () => {
-    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#dataChangeHandler(UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   };
 }

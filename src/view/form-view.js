@@ -1,4 +1,4 @@
-import { FULL_DATE_FORMAT, ModeType, TIME_FORMAT, TYPES } from '../const.js';
+import { DateFormat, ModeType, TYPES } from '../const.js';
 import { transformData, ucFirst } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
@@ -24,7 +24,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
   const pointOffers = typeOffers.filter((typeOffer) => offersList.includes(typeOffer.id));
   const humanizesDuration = (date) => {
     if (date) {
-      return `${transformData(date, FULL_DATE_FORMAT)} ${transformData(date, TIME_FORMAT)}`;
+      return `${transformData(date, DateFormat.FULL)} ${transformData(date, DateFormat.TIME)}`;
     } else {
       return '';
     }
@@ -188,8 +188,8 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         <header class="event__header">
           ${renderTypeWrapper()}
           ${renderEventFieldGroups()}
-          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
-          <button class="event__reset-btn" type="reset">
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${(isSaving) ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset" ${(isDeleting) ? 'disabled' : ''}>
           ${mode === ModeType.CREATE_NEW ? 'Cancel' : `${isDeleting ? 'Deleting...' : 'Delete'}`}</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
@@ -207,12 +207,12 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
 export default class FormView extends AbstractStatefulView {
   #destinations = null;
   #offers = null;
-  #handleFormSubmit = null;
+  #formSubmitedHandler = null;
   #point = null;
-  #handleFormClose = null;
+  #formClosedHandler = null;
   #dateFrom = null;
   #dateTo = null;
-  #handleDeleteClick = null;
+  #deleteClickHandler = null;
   #modeType = null;
   constructor({ point, boardDestinations, boardOffers, onFormSubmit, onCloseForm, onDeleteClick, mode }) {
     super();
@@ -220,9 +220,9 @@ export default class FormView extends AbstractStatefulView {
     this.#destinations = boardDestinations;
     this._setState(point);
     this.#offers = boardOffers;
-    this.#handleFormSubmit = onFormSubmit;
-    this.#handleFormClose = onCloseForm;
-    this.#handleDeleteClick = onDeleteClick;
+    this.#formSubmitedHandler = onFormSubmit;
+    this.#formClosedHandler = onCloseForm;
+    this.#deleteClickHandler = onDeleteClick;
     this.#modeType = mode;
     this._restoreHandlers();
   }
@@ -263,21 +263,21 @@ export default class FormView extends AbstractStatefulView {
 
   #formCloseHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormClose();
+    this.#formClosedHandler();
   };
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(FormView.parseStateToPoint(this._state));
+    this.#deleteClickHandler(FormView.parseStateToPoint(this._state));
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
 
-    const form = this.element.querySelector('.event--edit');
+    const formElement = this.element.querySelector('.event--edit');
     const { dateFrom, dateTo, destination } = this._state;
-    if (form.checkValidity() && dateTo !== '' && dateFrom !== '' && destination) {
-      this.#handleFormSubmit(FormView.parseStateToPoint(this._state));
+    if (formElement.checkValidity() && dateTo !== '' && dateFrom !== '' && destination) {
+      this.#formSubmitedHandler(FormView.parseStateToPoint(this._state));
     } else {
       this.shake();
     }

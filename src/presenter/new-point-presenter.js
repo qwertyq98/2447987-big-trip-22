@@ -5,15 +5,15 @@ import FormView from '../view/form-view.js';
 
 export default class NewPointPresenter {
   #pointListContainer = null;
-  #handleDataChange = null;
-  #handleDestroy = null;
+  #dataChangeHandler = null;
+  #destroyHandler = null;
   #pointEditComponent = null;
   #pointsModel = null;
 
   constructor({boardContainer, onDataChange, onDestroy, pointsModel}) {
     this.#pointListContainer = boardContainer;
-    this.#handleDataChange = onDataChange;
-    this.#handleDestroy = onDestroy;
+    this.#dataChangeHandler = onDataChange;
+    this.#destroyHandler = onDestroy;
     this.#pointsModel = pointsModel;
   }
 
@@ -26,9 +26,9 @@ export default class NewPointPresenter {
       point: NEW_POINT,
       boardDestinations: this.#pointsModel.destinations,
       boardOffers: this.#pointsModel.offers,
-      onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick,
-      onCloseForm: this.#handleDeleteClick,
+      onFormSubmit: this.#formSubmitHandler,
+      onDeleteClick: this.#deleteClickHandler,
+      onCloseForm: this.#deleteClickHandler,
       mode: ModeType.CREATE_NEW
     });
 
@@ -42,7 +42,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#handleDestroy();
+    this.#destroyHandler();
 
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
@@ -70,15 +70,15 @@ export default class NewPointPresenter {
   }
 
 
-  #handleFormSubmit = (point) => {
-    this.#handleDataChange(
+  #formSubmitHandler = (point) => {
+    this.#dataChangeHandler (
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point,
     );
   };
 
-  #handleDeleteClick = () => {
+  #deleteClickHandler = () => {
     this.destroy();
   };
 

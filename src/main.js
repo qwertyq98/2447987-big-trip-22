@@ -7,7 +7,7 @@ import PointsApiService from './points-api-service.js';
 import PointsModel from './model/points-model.js';
 
 const boardContainerElement = document.querySelector('.trip-events');
-const buttonContainer = document.querySelector('.trip-main');
+const buttonContainerElement = document.querySelector('.trip-main');
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel({
   pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
@@ -17,22 +17,22 @@ const boardPresenter = new BoardPresenter({
   boardContainer: boardContainerElement,
   pointsModel,
   filterModel,
-  onNewPointDestroy: handleNewPointFormClose,
+  onNewPointDestroy: newPointFormCloseHandler,
 });
 
 const newPointButtonComponent = new NewPointButtonView({
-  onClick: handleNewPointButtonClick
+  onClick: newPointButtonClickHandler
 });
 
 boardPresenter.init();
 pointsModel.init();
-render(newPointButtonComponent, buttonContainer);
+render(newPointButtonComponent, buttonContainerElement);
 
-function handleNewPointFormClose() {
+function newPointFormCloseHandler () {
   newPointButtonComponent.element.disabled = false;
 }
 
-function handleNewPointButtonClick() {
+function newPointButtonClickHandler () {
   boardPresenter.createPoint();
   newPointButtonComponent.element.disabled = true;
 }
