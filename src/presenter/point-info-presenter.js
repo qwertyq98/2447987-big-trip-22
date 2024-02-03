@@ -11,7 +11,7 @@ export default class PointInfoPresenter {
   constructor({ infoContainer, pointsModel }) {
     this.#pointInfoContainer = infoContainer;
     this.#pointsModel = pointsModel;
-    this.#pointsModel.addObserver(this.#handleModelChange);
+    this.#pointsModel.addObserver(this.#modelChangeHandler);
   }
 
   get dateFrom() {
@@ -74,7 +74,7 @@ export default class PointInfoPresenter {
     }, 0);
   }
 
-  #handleModelChange = (updateType) => {
+  #modelChangeHandler = (updateType) => {
     if (updateType !== UpdateType.ERROR) {
       this.init();
     }

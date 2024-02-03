@@ -1,9 +1,12 @@
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const SORTS = ['day', 'event', 'time', 'price', 'offers'];
-const DATE_FORMAT = 'MMM D';
-const DATE_FORMAT_REVERSE = 'D MMM';
-const TIME_FORMAT = 'HH:mm';
-const FULL_DATE_FORMAT = 'DD/MM/YY';
+const DateFormat = {
+  DATE:'MMM DD',
+  REVERSE_DATE: 'D MMM',
+  TIME: 'HH:mm',
+  FULL: 'DD/MM/YY'
+};
+
 const NEW_POINT = {
   'basePrice': 0,
   'dateFrom': '',
@@ -63,11 +66,9 @@ const TimeLimit = {
 
 export {
   TYPES,
-  DATE_FORMAT,
+  DateFormat,
   FilterType,
   SORTS,
-  TIME_FORMAT,
-  FULL_DATE_FORMAT,
   RenderPosition,
   EmptyFiltersList,
   ModeType,
@@ -79,5 +80,4 @@ export {
   END_POINT,
   TimeLimit,
   VALID_DATA_LENGTH,
-  DATE_FORMAT_REVERSE,
 };

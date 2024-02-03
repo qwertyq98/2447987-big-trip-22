@@ -4,11 +4,11 @@ function createNewPointButtonTemplate() {
 }
 
 export default class NewPointButtonView extends AbstractView {
-  #handleClick = null;
+  #clickButtonHandler = null;
 
   constructor({onClick}) {
     super();
-    this.#handleClick = onClick;
+    this.#clickButtonHandler = onClick;
     this.element.addEventListener('click', this.#clickHandler);
   }
 
@@ -18,6 +18,6 @@ export default class NewPointButtonView extends AbstractView {
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleClick();
+    this.#clickButtonHandler();
   };
 }
