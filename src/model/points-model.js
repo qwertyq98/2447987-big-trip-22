@@ -38,12 +38,11 @@ export default class PointsModel extends Observable {
       this.#points = points.map(this.#adaptToClient);
       this.#destinations = destinations.map(this.#adaptToClient);
       this.#offers = offers.map(this.#adaptToClient);
+      this._notify(UpdateType.INIT);
     } catch(err) {
       this.#points = [];
       this._notify(UpdateType.ERROR);
     }
-
-    this._notify(UpdateType.INIT);
   }
 
   async updatePoint(updateType, update) {

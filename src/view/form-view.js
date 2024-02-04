@@ -1,3 +1,4 @@
+import he from 'he';
 import { DateFormat, ModeType, TYPES } from '../const.js';
 import { transformData, ucFirst } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
@@ -68,7 +69,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
                 <label class="event__offer-label" for="event-offer-${offerType.id}">
                   <span class="event__offer-title">${offerType.title}</span>
                   &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${offerType.price}</span>
+                  <span class="event__offer-price">${he.encode(String(offerType.price))}</span>
                 </label>
               </div>`).join('')}
           </div>
@@ -127,7 +128,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         id="event-destination-${id}"
         type="text"
         name="event-destination"
-        value="${pointDestination?.name || ''}"
+        value="${he.encode(pointDestination?.name || '')}"
         list="destination-list-${id}"
         ${isDisabled ? 'disabled' : ''}
         required
@@ -244,7 +245,7 @@ export default class FormView extends AbstractStatefulView {
   }
 
   reset() {
-    this.updateElement({...this.#point, ...this.#offers});
+    this.updateElement({...this.#point});
   }
 
   removeElement() {

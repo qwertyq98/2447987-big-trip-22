@@ -47,7 +47,7 @@ export default class PointsApiService extends ApiService {
       body: JSON.stringify(this.#adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
-
+    ApiService.checkStatus(response);
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
@@ -60,7 +60,7 @@ export default class PointsApiService extends ApiService {
       body: JSON.stringify(this.#adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
-
+    ApiService.checkStatus(response);
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
@@ -71,7 +71,7 @@ export default class PointsApiService extends ApiService {
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
-
+    ApiService.checkStatus(response);
     return response;
   }
 }

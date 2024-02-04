@@ -24,6 +24,7 @@ export default class BoardPresenter {
   #noPointComponent = null;
   #newPointPresenter = null;
   #newPointDestroyHandler = null;
+  #loadedHandler = null;
   #loadingComponent = new LoadingView();
   #isLoading = true;
   #errorMessageComponent = null;
@@ -32,11 +33,12 @@ export default class BoardPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({boardContainer, pointsModel, filterModel, onNewPointDestroy}) {
+  constructor({boardContainer, pointsModel, filterModel, onNewPointDestroy, onLoaded}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#newPointDestroyHandler = onNewPointDestroy;
+    this.#loadedHandler = onLoaded;
     this.#pointsModel.addObserver(this.#modelEventHandler);
     this.#filterModel.addObserver(this.#modelEventHandler);
   }
@@ -262,12 +264,14 @@ export default class BoardPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
+        this.#loadedHandler(true);
         break;
       case UpdateType.ERROR:
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#clearBoard();
         this.#renderErrorMessage();
+        this.#loadedHandler(false);
         break;
     }
   };

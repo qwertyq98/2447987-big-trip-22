@@ -18,6 +18,7 @@ const boardPresenter = new BoardPresenter({
   pointsModel,
   filterModel,
   onNewPointDestroy: newPointFormCloseHandler,
+  onLoaded: boardLoadedHandler,
 });
 
 const newPointButtonComponent = new NewPointButtonView({
@@ -29,11 +30,18 @@ pointsModel.init();
 render(newPointButtonComponent, buttonContainerElement);
 
 function newPointFormCloseHandler () {
-  newPointButtonComponent.element.disabled = false;
+  toggleDisableNewPointButton(false);
 }
 
 function newPointButtonClickHandler () {
   boardPresenter.createPoint();
-  newPointButtonComponent.element.disabled = true;
+  toggleDisableNewPointButton(true);
 }
 
+function boardLoadedHandler(isSuccess) {
+  toggleDisableNewPointButton(!isSuccess);
+}
+
+function toggleDisableNewPointButton (state) {
+  newPointButtonComponent.element.disabled = state;
+}
