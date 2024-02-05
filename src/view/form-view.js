@@ -69,7 +69,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
                 <label class="event__offer-label" for="event-offer-${offerType.id}">
                   <span class="event__offer-title">${offerType.title}</span>
                   &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${he.encode(String(offerType.price))}</span>
+                  <span class="event__offer-price">${offerType.price}</span>
                 </label>
               </div>`).join('')}
           </div>
@@ -177,7 +177,7 @@ function createEditFormTemplate(point, destinations = [], offers, mode) {
         min=1
         pattern="^[ 0-9]+$"
         name="event-price"
-        value="${basePrice}"
+        value="${he.encode(String(basePrice))}"
         ${isDisabled ? 'disabled' : ''}
         required
         >
